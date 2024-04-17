@@ -19,6 +19,9 @@ public class RentalHistory {
     @Id
     private Integer rentalId;
 
+    @Column(columnDefinition = "int")
+    private Integer userId;
+
     @Column(columnDefinition = "varchar(30) unique")
     private String transportName;
 

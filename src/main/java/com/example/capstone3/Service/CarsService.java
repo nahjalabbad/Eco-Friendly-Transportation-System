@@ -11,13 +11,13 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class CarsService {
-private final CarsRepository carsRepositry;
+private final CarsRepository carsRepository;
 private final CompanyRepository companyRepository;
 private final StationRepository stationRepository;
     private final RentRepository rentRepository;
 
 public List<Cars>getAllCars(){
-    return carsRepositry.findAll();
+    return carsRepository.findAll();
 }
 
     public void addCars(Integer companyId, Cars car) {
@@ -29,34 +29,15 @@ public List<Cars>getAllCars(){
             throw new ApiException("Company transport type does not match");
         }
 
-        // Ensure that the required properties of the Car object are set
         if (car.getCarName() == null || car.getFuelPercentage() == null) {
             throw new ApiException("Car name and fuel percentage must be provided");
         }
-
-        // Create a new Rent object
-        Rent rent = new Rent();
-        rent.setRentStatus("Not Rented");
-        rent.setTransportName(car.getCarName());
-        rent.setFuelPercentage(car.getFuelPercentage());
-        rent.setQuantity(1); // Assuming quantity is 1 for each car
-        // Set the transportType property of Rent if necessary
-        rent.setTransportType("Car");
-
-        // Set the company for the car
         car.setCompany(company);
-
-        // Save the Rent object
-        rentRepository.save(rent);
-
-        // Save the Car object
-        carsRepositry.save(car);
+        carsRepository.save(car);
     }
 
-
-
     public  void updateCars(Integer carId,Cars NewCar){
-    Cars car= carsRepositry.findCarsByCarId(carId);
+    Cars car= carsRepository.findCarsByCarId(carId);
     if(car==null){
         throw new ApiException("Car id not found!");
     }
@@ -66,33 +47,33 @@ public List<Cars>getAllCars(){
     car.setNumSeats(NewCar.getNumSeats());
     car.setPinNumber(NewCar.getPinNumber());
     car.setCarType(NewCar.getCarType());
-    carsRepositry.save(car);
+    carsRepository.save(car);
 }
 
 
 public void deleteCar(Integer carId){
-    Cars car=carsRepositry.findCarsByCarId(carId);
+    Cars car= carsRepository.findCarsByCarId(carId);
     if(car==null){
         throw new ApiException("Car id not found!");
     }
-    carsRepositry.delete(car);
+    carsRepository.delete(car);
 }
 
 
 public void assignCarsToStation(Integer carId,Integer stationId){
-    Cars car= carsRepositry.findCarsByCarId(carId);
+    Cars car= carsRepository.findCarsByCarId(carId);
     Station station= stationRepository.findStationByStationId(stationId);
     if(car==null||station==null){
         throw new ApiException("Can't Assigned");
     }
     car.getStations().add(station);
     station.getCars().add(car);
-    carsRepositry.save(car);
+    carsRepository.save(car);
     stationRepository.save(station);
 }
 
 public List<Cars> viewCarsByType(String carType){
-    List<Cars> c =carsRepositry.findCarsByCarType(carType);
+    List<Cars> c = carsRepository.findCarsByCarType(carType);
     if(c==null){
         throw new ApiException("Car id not found!");
     }
@@ -100,7 +81,7 @@ public List<Cars> viewCarsByType(String carType){
 }
 
 public List<Cars> viewAllCars(){
-        List<Cars> c =carsRepositry.findCarsByRentStatus("not rented");
+        List<Cars> c = carsRepository.findCarsByRentStatus("not rented");
         if(c==null){
             throw new ApiException("Car id not found!");
         }
@@ -108,7 +89,7 @@ public List<Cars> viewAllCars(){
     }
 
 public String getSpecificDetails(String carName){
-    Cars car=carsRepositry.findCarsByCarName(carName);
+    Cars car= carsRepository.findCarsByCarName(carName);
     if(car==null){
         throw new ApiException("Car name not found!");
     }
@@ -123,7 +104,7 @@ public String getSpecificDetails(String carName){
 
     public String setLock(Integer compnayId,Integer carId,Integer pinNumber , String transName){
         Company company = companyRepository.findCompanyByCompanyId(compnayId);
-        Cars car= carsRepositry.findCarsByCarId(carId);
+        Cars car= carsRepository.findCarsByCarId(carId);
         Rent rent = rentRepository.findRentByTransportName(transName);
         if (car == null || company == null) {
             throw new ApiException("Can't setLock");

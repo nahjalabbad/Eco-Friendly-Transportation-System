@@ -16,8 +16,7 @@ public interface BicycleRepository extends JpaRepository<Bicycle,Integer> {
 
     Bicycle findBicycleByBicycleName(String name);
 
-    @Query("select bicycle from Bicycle bicycle where bicycle.bicycleId=?1")
-    List<Bicycle> findBicyclesByBicycleId(Integer id);
+    Boolean existsByBicycleName(String bicycleName);
 
     List<Bicycle> findBicycleByRentStatus(String rentStatus);
 }

@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -23,7 +24,6 @@ public class Station {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer stationId;
 
-
     @Column(columnDefinition = "varchar(30)")
     private String dropOffStation;
 
@@ -33,9 +33,13 @@ public class Station {
     @Column(columnDefinition = "boolean default false")
     private Boolean haveChargingStation;
 
-    @NotNull(message = "capacity must be not empty")
-    @Column(columnDefinition = "varchar(30) not null")
-    private Integer capacity;
+    @NotNull(message = "pickUpCapacity must be not empty")
+    @Column(columnDefinition = "int not null")
+    private Integer pickUpCapacity;
+
+    @NotNull(message = "DropOffCapacity must be not empty")
+    @Column(columnDefinition = "int not null")
+    private Integer dropOffCapacity;
 
     @Pattern(regexp = "^(open|under maintenance|temporarily closed)")
     @Column(columnDefinition = "varchar(60) not null")
@@ -53,4 +57,10 @@ public class Station {
     @ManyToMany
     @JsonIgnore
     private Set<Rent> rents;
+
+    @OneToMany(mappedBy = "pickUpLocation")
+    private List<Rent> rentsAsPickUp;
+
+    @OneToMany(mappedBy = "dropOffLocation")
+    private List<Rent> rentsAsDropOff;
 }

@@ -43,6 +43,10 @@ public class Bicycle {
     @Column(columnDefinition = "varchar(250) not null")
     private String location;
 
+    @NotNull(message = "price must be not empty")
+    @Column(columnDefinition = "int not null")
+    private Integer price;
+
     @Pattern(regexp = "^(Rented|Not Rented|Not Available)$",  message = "rentStatus must be either Rented, Not Rented, or Not Available")
     @Column(columnDefinition = "varchar(20)")
     private String rentStatus;

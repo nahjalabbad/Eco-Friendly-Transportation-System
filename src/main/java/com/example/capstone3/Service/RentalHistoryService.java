@@ -7,7 +7,6 @@ import com.example.capstone3.Model.RentalHistory;
 import com.example.capstone3.Model.User;
 import com.example.capstone3.Repository.RentRepository;
 import com.example.capstone3.Repository.RentalHistoryRepository;
-import com.example.capstone3.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,19 +22,22 @@ public class RentalHistoryService {
         return rentalHistoryRepository.findAll();
     }
 
-    public void addRentalHistory( Integer rentId ,RentalHistoryDTO rentalHistoryDTo) {
+    public RentalHistory addRentalHistory(Integer rentId, RentalHistoryDTO rentalHistoryDTO) {
         Rent rent = rentRepository.findRentByRentId(rentId);
 
         if (rent == null) {
-            throw new ApiException("rent not found or user id not found");
+            throw new ApiException("Rent id not found");
         }
 
-        RentalHistory rentalHistory = new RentalHistory(
-        null, rentalHistoryDTo.getTransportName(),rentalHistoryDTo.getPickUpStation(),rentalHistoryDTo.getDropOffStation(),rentalHistoryDTo.getStartTime()
-        ,rentalHistoryDTo.getEndTime(),rentalHistoryDTo.getDuration(),rentalHistoryDTo.getStatus(),
-        rentalHistoryDTo.getFuelLevel(),rentalHistoryDTo.getRating(),rentalHistoryDTo.getComment(), rent);
+        RentalHistory rentalHistory = new RentalHistory(null, rentalHistoryDTO.getUserId(), rentalHistoryDTO.getTransportName(),
+                rentalHistoryDTO.getPickUpStation(), rentalHistoryDTO.getDropOffStation(), rentalHistoryDTO.getStartTime(),
+                rentalHistoryDTO.getEndTime(), rentalHistoryDTO.getDuration(), rentalHistoryDTO.getStatus(),
+                rentalHistoryDTO.getFuelLevel(), rentalHistoryDTO.getRating(), rentalHistoryDTO.getComment(), rent);
+
         rentalHistory.setRent(rent);
         rentalHistoryRepository.save(rentalHistory);
+
+        return rentalHistory;
     }
 
     public void updateRentalHistory(Integer rentalId, RentalHistoryDTO rentalHistoryDTo) {
@@ -95,6 +97,7 @@ public class RentalHistoryService {
         }
         return userRent;
     }
+
 
 
 }

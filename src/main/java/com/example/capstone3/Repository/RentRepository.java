@@ -14,9 +14,12 @@ public interface RentRepository  extends JpaRepository<Rent,Integer> {
 
     Rent findRentByUserUserId(Integer userId);
 
+    Rent getRentByPrice(Integer price);
 
     Rent findRentByTransportName(String transportName);
 
     List<Rent>findRentByTransportType(String transportTyp );
+
+
 
 }

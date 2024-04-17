@@ -25,21 +25,12 @@ return scooterRepository.findAll();
         if (company == null) {
             throw new ApiException("Company id not found!");
         }
-        Rent rent = new Rent();
-        rent.setRentStatus("Not Rented");
-        rent.setTransportName(scooter.getScooterName());
-        rent.setFuelPercentage(scooter.getChargePercentage());
-        rent.setQuantity(1); // Assuming quantity is 1 for each scooter
-        // Set the transportType property of Rent if necessary
-        rent.setTransportType("Scooter");
-
+        if (!company.getTransportType().equalsIgnoreCase("Scooter")){
+            throw new ApiException("Company transport type is not set to bicycle");
+        }
         scooter.setRentStatus("Not Rented");
         scooter.setCompany(company);
 
-        // Save the Rent object
-        rentRepository.save(rent);
-
-        // Save the Scooter object
         scooterRepository.save(scooter);
     }
 

@@ -50,6 +50,10 @@ public class Scooter {
     @Column(columnDefinition = "varchar(20)")
     private String rentStatus;
 
+    @NotNull(message = "price must be not empty")
+    @Column(columnDefinition = "int not null")
+    private Integer price;
+
     @Pattern(regexp = "^(Returned|Not Returned)$",  message = "returnStatus must be either Returned or Not Returned")
     @Column(columnDefinition = "varchar(50)")
     private String returnStatus;

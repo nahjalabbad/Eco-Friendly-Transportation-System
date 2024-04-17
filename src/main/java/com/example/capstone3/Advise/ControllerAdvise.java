@@ -4,6 +4,8 @@ import com.example.capstone3.API.ApiException;
 import com.example.capstone3.API.ApiResponse;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.dao.InvalidDataAccessResourceUsageException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -79,6 +81,16 @@ public class ControllerAdvise {
     }
     @ExceptionHandler(value = NullPointerException.class)
     public ResponseEntity NullPointerException(NullPointerException e){
+        String msg = e.getMessage();
+        return ResponseEntity.status(400).body(new ApiResponse(msg));
+    }
+    @ExceptionHandler(value = IncorrectResultSizeDataAccessException.class)
+    public ResponseEntity IncorrectResultSizeDataAccessException(IncorrectResultSizeDataAccessException e){
+        String msg = e.getMessage();
+        return ResponseEntity.status(400).body(new ApiResponse(msg));
+    }
+    @ExceptionHandler(value = InvalidDataAccessApiUsageException.class)
+    public ResponseEntity InvalidDataAccessApiUsageException(InvalidDataAccessApiUsageException e){
         String msg = e.getMessage();
         return ResponseEntity.status(400).body(new ApiResponse(msg));
     }

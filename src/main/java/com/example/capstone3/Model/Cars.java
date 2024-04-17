@@ -18,7 +18,7 @@ public class Cars {
 
     @NotEmpty(message = "car type must be not empty")
     @Pattern(regexp = "^(luxury|sedan|sport)")
-    @Column(columnDefinition = "varchar(20) unique")
+    @Column(columnDefinition = "varchar(20)")
     private String carType;
 
     @NotEmpty(message = "car name must be not empty")
@@ -40,6 +40,10 @@ public class Cars {
     @NotNull(message = "number of seats must be not empty")
     @Column(columnDefinition = "int not null")
     private Integer numSeats;
+
+    @NotNull(message = "quantity must be not empty")
+    @Column(columnDefinition = "int not null")
+    private Integer price;
 
     @Column(columnDefinition = "int unique")
     private Integer pinNumber;

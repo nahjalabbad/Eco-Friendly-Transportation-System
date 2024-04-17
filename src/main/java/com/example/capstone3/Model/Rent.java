@@ -21,10 +21,10 @@ public class Rent {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer rentId;
 
-    @Column(columnDefinition = "varchar(30) unique")
+    @Column(columnDefinition = "varchar(30)")
     private String dropOffLocation;
 
-    @Column(columnDefinition = "varchar(30) unique")
+    @Column(columnDefinition = "varchar(30)")
     private String pickUpLocation;
 
     @NotEmpty(message = "transportType should not be empty")
@@ -35,17 +35,19 @@ public class Rent {
     @Column(columnDefinition = "int")
     private Integer fuelPercentage;
 
-    @Column(columnDefinition = "varchar(30) unique")
+    @Column(columnDefinition = "varchar(30)")
     private String transportName;
 
 
-    @Column(columnDefinition = "int unique")
-    @Max(4)
+    @Column(columnDefinition = "int")
     private Integer pinNumber;
 
     @NotNull(message = "quantity must be not empty")
     @Column(columnDefinition = "int not null")
     private Integer quantity;
+
+    @Column(columnDefinition = "int")
+    private Integer price;
 
     @Pattern(regexp = "^(Rented|Not Rented|Not Available)$",  message = "rentStatus must be either Rented, Not Rented, or Not Available")
     @Column(columnDefinition = "varchar(20)")
@@ -61,6 +63,7 @@ public class Rent {
     @Column(columnDefinition = "DATETIME")
     private LocalDateTime endDate;
 
+    @Pattern(regexp = "^(1 Day|3 Days| 1 Week|3 Weeks| 1 Month)")
     @Column(columnDefinition = "varchar(30)")
     private String duration;
 
@@ -84,6 +87,14 @@ public class Rent {
 
     @ManyToMany(mappedBy = "rents")
     private Set<Station> stations;
+
+    @ManyToOne
+    @JoinColumn(name = "pickup_station_name")
+    private Station pickUpStation;
+
+    @ManyToOne
+    @JoinColumn(name = "dropoff_station_name")
+    private Station dropOffStation;
 
 
 

@@ -28,21 +28,12 @@ public class BicycleService {
         if (company == null) {
             throw new ApiException("Company id not found!");
         }
-        Rent rent = new Rent();
-        rent.setRentStatus("Not Rented");
-        rent.setTransportName(bicycle.getBicycleName());
-        rent.setFuelPercentage(0); // Assuming bicycles don't have fuel
-        rent.setQuantity(1); // Assuming quantity is 1 for each bicycle
-        // Set the transportType property of Rent if necessary
-        rent.setTransportType("Bicycle");
-
+        if (!company.getTransportType().equalsIgnoreCase("Bicycle")){
+            throw new ApiException("Company transport type is not set to bicycle");
+        }
         bicycle.setRentStatus("Not Rented");
         bicycle.setCompany(company);
 
-        // Save the Rent object
-        rentRepository.save(rent);
-
-        // Save the Bicycle object
         bicycleRepository.save(bicycle);
     }
 

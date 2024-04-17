@@ -41,7 +41,8 @@ public class StationService {
         station1.setPickUpStation(station.getPickUpStation());
         station1.setDropOffStation(station.getDropOffStation());
         station1.setHaveChargingStation(station.getHaveChargingStation());
-        station1.setCapacity(station.getCapacity());
+        station1.setDropOffCapacity(station.getDropOffCapacity());
+        station1.setPickUpCapacity(station.getPickUpCapacity());
         station1.setStatus(station.getStatus());
 
         stationRepository.save(station1);

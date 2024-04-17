@@ -24,5 +24,8 @@ public interface RentalHistoryRepository extends JpaRepository<RentalHistory,Int
     List<RentalHistory> findRentalHistoriesByRating(Integer rating);
 
 
+    RentalHistory findRentalHistoriesByRent(Rent rent );
+
+
     RentalHistory findRentalHistoriesByTransportName(String transportName );
 }

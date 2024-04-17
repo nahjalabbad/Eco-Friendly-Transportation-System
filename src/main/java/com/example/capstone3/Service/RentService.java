@@ -17,46 +17,146 @@ public class RentService {
     private final CompanyRepository companyRepository;
     private final StationRepository stationRepository;
     private final RentalHistoryRepository rentalHistoryRepository;
+    private final RentalHistoryService rentalHistoryService;
+    private final CarsRepository carsRepository;
+    private final ScooterRepository scooterRepository;
+    private final BicycleRepository bicycleRepository;
 
 
     public List<Rent> getRent() {
         return rentRepository.findAll();
     }
 
-    public String addRent(Integer userId, String companyName, String transName, Rent rent1) {
+    public String addRent(Integer userId, String companyName, String transName, String duration, Rent rent) {
         User user = userRepository.findUserByUserId(userId);
-        Rent rent = rentRepository.findRentByTransportName(transName); // Using a different variable name
         Company company = companyRepository.findCompanyByCompanyName(companyName);
-
         Station station = stationRepository.getStationByStationName(rent.getPickUpLocation());
-        Station station1 = stationRepository.getStationByStationName(rent.getDropOffLocation());
 
-        if (user == null || company == null) {
-            throw new ApiException("Can't Rent");
+        if (user == null || company == null || station == null) {
+            throw new ApiException("Invalid user, company, or station");
         }
-        if (!rent.getTransportName().equalsIgnoreCase(transName)) {
-            throw new ApiException("Transport name is not found in our system");
+
+        Rent rentToUse = null;
+
+        if (carsRepository.existsByCarName(transName)&&rent.getTransportType().equalsIgnoreCase("Car")) {
+            Cars car = carsRepository.findCarsByCarName(transName);
+            rentToUse = createRent(car, transName, duration, rent);
         }
+        else if (bicycleRepository.existsByBicycleName(transName)&&rent.getTransportType().equalsIgnoreCase("Bicycle")) {
+            Bicycle bicycle = bicycleRepository.findBicycleByBicycleName(transName);
+            rentToUse = createRent(bicycle, transName, duration, rent);
+        }
+        else if (scooterRepository.existsByScooterName(transName)&&rent.getTransportType().equalsIgnoreCase("Scooter")) {
+            Scooter scooter = scooterRepository.findScooterByScooterName(transName);
+            rentToUse = createRent(scooter, transName, duration, rent);
+        } else {
+            throw new ApiException("please check transport name and type if they match");
+        }
+
         company.setQuantity(company.getQuantity() - rent.getQuantity());
 
-        rent.setRentStatus("Rented");
-
         user.setRide(user.getRide() + 1);
+        user.getRentSet().add(rentToUse);
 
-        station.setCapacity(station.getCapacity() - rent.getQuantity());
+        station.setPickUpCapacity(station.getPickUpCapacity() - rent.getQuantity());
+        station.setDropOffCapacity(station.getDropOffCapacity() - rent.getQuantity());
 
-        RentalHistoryDTO rentalHistoryDTO = new RentalHistoryDTO(null, rent.getTransportName(), rent.getPickUpLocation(), rent.getDropOffLocation(),
-                rent.getStartDate(), rent.getEndDate(), rent.getDuration(), null, rent.getFuelPercentage(), null, null);
+        rentToUse.setRentStatus("Rented");
+        rentToUse.setDuration(duration);
+
+
+        RentalHistoryDTO rentalHistoryDTO = new RentalHistoryDTO(null, user.getUserId(), rentToUse.getTransportName(),
+                rentToUse.getPickUpLocation(), rentToUse.getDropOffLocation(), rentToUse.getStartDate(),
+                rentToUse.getEndDate(), rentToUse.getDuration(), "on going", rentToUse.getFuelPercentage(), null, null);
+        RentalHistory rentalHistory = rentalHistoryService.addRentalHistory(rentToUse.getRentId(), rentalHistoryDTO);
+
         companyRepository.save(company);
         userRepository.save(user);
-        stationRepository.save(station1);
+        rentRepository.save(rentToUse);
         stationRepository.save(station);
+        rentalHistoryRepository.save(rentalHistory);
 
-        rentRepository.save(rent);
-        rentRepository.save(rent1);
-
-        return "thank you for renting " + rent.getPinNumber();
+        return "Thank you for renting " + rentToUse.getTransportName();
     }
+
+    private Rent createRent(Object transport, String transName, String duration, Rent rent) {
+        if (transport == null) {
+            throw new ApiException("Transport object is null");
+        }
+        Station pickUpStation = stationRepository.getStationByStationName(rent.getPickUpLocation());
+        Station dropOffStation = stationRepository.getStationByStationName(rent.getDropOffLocation());
+
+
+
+        Rent rentToUse = new Rent();
+        rentToUse.setQuantity(1);
+        rentToUse.setRentStatus("Not Rented");
+        rentToUse.setDuration(duration);
+
+        if (transport instanceof Cars) {
+            Cars car = (Cars) transport;
+            rentToUse.setTransportName(car.getCarName());
+            rentToUse.setFuelPercentage(car.getFuelPercentage());
+            rentToUse.setTransportType("Car");
+            rentToUse.setPickUpLocation(car.getLocation());
+            rentToUse.setPrice(car.getPrice());
+            rentToUse.setPinNumber(car.getPinNumber());
+
+            rentRepository.save(rentToUse);
+
+            car.getStations().add(pickUpStation);
+            car.getRents().add(rentToUse);
+            car.setRentStatus(rentToUse.getRentStatus());
+            carsRepository.save(car);
+        } else if (transport instanceof Bicycle) {
+            Bicycle bicycle = (Bicycle) transport;
+            rentToUse.setTransportName(bicycle.getBicycleName());
+            rentToUse.setFuelPercentage(0);
+            rentToUse.setTransportType("Bicycle");
+            rentToUse.setPrice(bicycle.getPrice());
+            rentToUse.setPinNumber(bicycle.getPinNumber());
+
+            rentRepository.save(rentToUse);
+
+            bicycle.getStations().add(pickUpStation);
+            bicycle.getRents().add(rentToUse);
+            bicycle.setRentStatus(rentToUse.getRentStatus());
+            bicycleRepository.save(bicycle);
+        } else if (transport instanceof Scooter) {
+            Scooter scooter = (Scooter) transport;
+            rentToUse.setTransportName(scooter.getScooterName());
+            rentToUse.setFuelPercentage(scooter.getChargePercentage());
+            rentToUse.setTransportType("Scooter");
+            rentToUse.setPrice(scooter.getPrice());
+            rentToUse.setPinNumber(scooter.getPinNumber());
+
+            rentRepository.save(rentToUse);
+
+            scooter.getStations().add(pickUpStation);
+            scooter.getRents().add(rentToUse);
+            scooter.setRentStatus(rentToUse.getRentStatus());
+            scooterRepository.save(scooter);
+        } else {
+            throw new ApiException("Invalid transport type");
+        }
+
+        Integer pricePerDuration=pricePerDuration(duration, rentToUse.getPrice());
+
+        rentToUse.setPickUpLocation(rent.getPickUpLocation());
+        rentToUse.setDropOffLocation(rent.getDropOffLocation());
+        rentToUse.setStartDate(rent.getStartDate());
+        rentToUse.setEndDate(rent.getEndDate());
+        rentToUse.setDuration(rent.getDuration());
+        rentToUse.setPrice(pricePerDuration);
+        rentToUse.setPickUpStation(pickUpStation);
+        rentToUse.setDropOffStation(dropOffStation);
+
+
+        rentRepository.save(rentToUse);
+
+        return rentToUse;
+    }
+
 
 
 
@@ -89,25 +189,41 @@ public class RentService {
         User user = userRepository.findUserByUserId(userId);
         Rent rent = rentRepository.findRentByTransportName(transName);
         Company company = companyRepository.findCompanyByCompanyName(companyName);
-        Station station = stationRepository.getStationByStationName(rent.getDropOffLocation());
+        Station station = rent.getDropOffStation();
 
-        if (user == null || company == null) {
-            throw new ApiException("Can't Rent");
+        if (user == null || company == null || station == null) {
+            throw new ApiException("Invalid user, company, or station");
         }
-        if (!rent.getTransportName().equalsIgnoreCase(transName)) {
-            throw new ApiException("Transport name is not found in our system");
-        }
+
         company.setQuantity(company.getQuantity() + rent.getQuantity());
-
         rent.setRentStatus("Not Rented");
-        rent.setFuelPercentage(rent.getFuelPercentage()-20);
-
-        station.setCapacity(station.getCapacity() + rent.getQuantity());
+        rent.setFuelPercentage(rent.getFuelPercentage() - 20);
 
         companyRepository.save(company);
         rentRepository.save(rent);
 
+        RentalHistory existingRentalHistory = rentalHistoryRepository.findRentalHistoriesByRent(rent);
+
+        if (existingRentalHistory != null) {
+            existingRentalHistory.setStatus("completed");
+            existingRentalHistory.setFuelLevel(rent.getFuelPercentage());
+            rentalHistoryRepository.save(existingRentalHistory);
+        } else {
+            RentalHistoryDTO rentalHistoryDTO = new RentalHistoryDTO(
+                    null, userId, rent.getTransportName(), rent.getPickUpLocation(),
+                    rent.getDropOffLocation(), rent.getStartDate(), rent.getEndDate(), rent.getDuration(),
+                    "completed", rent.getFuelPercentage(), null, null
+            );
+            RentalHistory rentalHistory = new RentalHistory(
+                    null, userId, rent.getTransportName(), rent.getPickUpLocation(),
+                    rent.getDropOffLocation(), rent.getStartDate(), rent.getEndDate(), rent.getDuration(),
+                    "completed", rent.getFuelPercentage(), null, null, rent
+            );
+            rentalHistoryRepository.save(rentalHistory);
+        }
     }
+
+
 
     public List<Rent>byAvalablity(){
         List<Rent> avalabiles = rentRepository.findRentByTransportType("available");
@@ -116,6 +232,31 @@ public class RentService {
         }
         return avalabiles;
     }
+
+    public Integer pricePerDuration(String duration,Integer price) {
+        Rent rent=rentRepository.getRentByPrice(price);
+        switch (duration) {
+            case "1 Day":
+                rent.setPrice(rent.getPrice());
+                break;
+            case "3 Days":
+                rent.setPrice(rent.getPrice()*3);
+                break;
+            case "1 Week":
+                rent.setPrice(rent.getPrice()*7);
+                break;
+            case "3 Weeks":
+                rent.setPrice(rent.getPrice()*21);
+                break;
+            case "1 Month":
+                rent.setPrice(rent.getPrice()*30);
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid duration: " + duration);
+        }
+        return rent.getPrice();
+    }
+
 }
 
 

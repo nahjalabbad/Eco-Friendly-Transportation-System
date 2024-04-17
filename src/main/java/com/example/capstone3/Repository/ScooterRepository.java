@@ -9,6 +9,8 @@ import java.util.List;
 @Repository
 public interface ScooterRepository extends JpaRepository<Scooter,Integer> {
     Scooter findScooterByScooterId(Integer id);
+    Scooter findScooterByScooterName(String name);
+    Boolean existsByScooterName(String scooterName);
     List<Scooter> findScooterByModel(Integer model);
     List<Scooter>  findScooterByRentStatus(String status);
 }

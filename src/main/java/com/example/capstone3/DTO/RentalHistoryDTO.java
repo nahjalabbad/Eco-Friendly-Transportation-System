@@ -16,6 +16,8 @@ public class RentalHistoryDTO {
     @NotNull(message = "rent id cannot be null")
     private Integer rentalId;
 
+    private Integer userId;
+
     private String transportName;
 
     @Size(max = 30)

@@ -54,4 +54,12 @@ public class CompanyService {
         c.setTransportType(transportationType);
         companyRepository.save(c);
     }
+
+    public List<Company> getTransportationType(Integer companyId , String transportationType){
+        List<Company> c = companyRepository.findCompanyByCompanyIdAndTransportType(companyId, transportationType);
+        if(c==null){
+            throw new ApiException("Company not found");
+        }
+       return c;
+    }
 }

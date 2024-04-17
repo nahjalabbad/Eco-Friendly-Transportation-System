@@ -1,7 +1,10 @@
 package com.example.capstone3.Service;
 
 import com.example.capstone3.API.ApiException;
+import com.example.capstone3.Model.Company;
+import com.example.capstone3.Model.RentalHistory;
 import com.example.capstone3.Model.User;
+import com.example.capstone3.Repository.RentalHistoryRepository;
 import com.example.capstone3.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,6 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final RentalHistoryRepository rentalHistoryRepository;
 
     public List<User> getUser(){
         return userRepository.findAll();
@@ -43,4 +47,37 @@ public class UserService {
         }
         userRepository.delete(u);
     }
+
+    public void addCommentAndRating(Integer userId , Integer rentalId, String comment, Integer rating){
+        User u = userRepository.findUserByUserId(userId);
+        RentalHistory r = rentalHistoryRepository.findRentalHistoryByRentalId(rentalId);
+
+        if(u==null || r==null){
+            throw new ApiException("User not found");
+        }
+        u.setRating(rating);
+        u.setComment(comment);
+        userRepository.save(u);
+    }
+
+    public String getReview(Integer userId , Integer rentalId){
+        User u = userRepository.findUserByUserId(userId);
+        RentalHistory r = rentalHistoryRepository.findRentalHistoryByRentalId(rentalId);
+
+        if(u==null || r==null){
+            throw new ApiException("User not found");
+        }
+
+        return u.getComment()+" "+u.getRating();
+    }
+
+    public String getTotalRides(Integer userId ){
+        User u = userRepository.findUserByUserId(userId);
+        if(u==null ){
+            throw new ApiException("User not found");
+        }
+
+        return "Total Rides:" + u.getRide();
+    }
+
 }

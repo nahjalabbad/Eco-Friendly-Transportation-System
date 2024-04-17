@@ -44,6 +44,14 @@ public class Bicycle {
     @Column(columnDefinition = "varchar(250) not null")
     private String location;
 
+    @Pattern(regexp = "^(Rented|Not Rented|Not Available)$",  message = "rentStatus must be either Rented, Not Rented, or Not Available")
+    @Column(columnDefinition = "varchar(20)")
+    private String rentStatus;
+
+    @Pattern(regexp = "^(Returned|Not Returned)$",  message = "returnStatus must be either Returned or Not Returned")
+    @Column(columnDefinition = "varchar(50)")
+    private String returnStatus;
+
     @ManyToOne
     @JoinColumn(name = "companyId", referencedColumnName = "companyId")
     @JsonIgnore

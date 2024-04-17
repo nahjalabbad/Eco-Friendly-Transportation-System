@@ -38,9 +38,9 @@ public class CarController {
         return ResponseEntity.status(200).body("Car deleted!");
     }
 
-    @PutMapping("/assign/{companyId}/{carId}")
-    public ResponseEntity assignCarsToStation(@PathVariable Integer companyId,@PathVariable Integer carId){
-        carsService.assignCarsToStation(companyId,carId);
+    @PutMapping("/assign/{stationId}/{carId}")
+    public ResponseEntity assignCarsToStation(@PathVariable Integer stationId,@PathVariable Integer carId){
+        carsService.assignCarsToStation(stationId,carId);
         return ResponseEntity.status(200).body("ِِAssigend Successfully");
     }
 
@@ -57,5 +57,16 @@ public class CarController {
         return ResponseEntity.status(200).body(carsService.getSpecificDetails(nameCar));
     }
 
+
+    @GetMapping("/view/{carType}")
+    public ResponseEntity viewCarsByType(String carType){
+        return ResponseEntity.status(200).body(carsService.viewCarsByType(carType));
+    }
+
+
+    @GetMapping("/viewall")
+    public ResponseEntity viewAllCars(){
+        return ResponseEntity.status(200).body(carsService.viewAllCars());
+    }
 
 }

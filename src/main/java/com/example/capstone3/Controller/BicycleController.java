@@ -38,12 +38,45 @@ public class BicycleController {
         return ResponseEntity.status(200).body("Bicycle deleted!");
     }
 
-    @PutMapping("/assign/{companyId}/{bicycleId}")
-    public ResponseEntity assignCarsToStation(@PathVariable Integer companyId,@PathVariable Integer bicycleId){
-        bicycleService.assignBicycleToStation(companyId,bicycleId);
+    //              EXTRA
+
+    @PutMapping("/assign/{stationId}/{bicycleId}")
+    public ResponseEntity assignCarsToStation(@PathVariable Integer stationId,@PathVariable Integer bicycleId){
+        bicycleService.assignBicycleToStation(stationId,bicycleId);
         return ResponseEntity.status(200).body("ِِAssigend Successfully");
     }
 
+    @GetMapping("/by_weels/{numofweels}")
+    public ResponseEntity getAllByNumOfWeels(@PathVariable Integer numofweels){
+        return ResponseEntity.status(200).body(bicycleService.byTypeWeels(numofweels));
+    }
+
+
+    @GetMapping("/by_model/{model}")
+    public ResponseEntity getAllByModel(@PathVariable Integer model){
+        return ResponseEntity.status(200).body(bicycleService.byModel(model));
+    }
+
+    @GetMapping("/details/{nameBik}")
+    public ResponseEntity getSpecificDetails(String nameBik){
+        return ResponseEntity.status(200).body(bicycleService.getSpecificDetails(nameBik));
+    }
+
+    @PutMapping("/set_lock/{compnayId}/{bicycleId}/{pinNumber}/{transName}")
+    public ResponseEntity setLock(Integer compnayId,Integer bicycleId,Integer pinNumber , String transName){
+        bicycleService.setLock(compnayId,bicycleId,pinNumber,transName);
+        return ResponseEntity.status(200).body("Lock set Successfully");
+    }
+
+    @GetMapping("/ava-rating/{bickName}")
+public ResponseEntity getAvgRating(@PathVariable String bickName){
+    return ResponseEntity.status(200).body(bicycleService.getAvgRating(bickName));
+    }
+
+    @GetMapping("/viewall/")
+    public ResponseEntity viewAValibalAllBick(){
+        return ResponseEntity.status(200).body(bicycleService.viewAValibalAllBick());
+    }
 
 
 

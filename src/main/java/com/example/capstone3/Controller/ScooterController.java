@@ -27,7 +27,7 @@ public class ScooterController {
     }
     @PutMapping("/update/{scooterId}")
     public ResponseEntity updateScooters(@PathVariable Integer scooterId,@RequestBody @Valid Scooter scooter){
-        scooterService.addScooter(scooterId,scooter);
+        scooterService.updateScooter(scooterId,scooter);
         return ResponseEntity.status(200).body("Scooter updated!");
     }
 
@@ -36,12 +36,31 @@ public class ScooterController {
         scooterService.deleteScooter(scooterId);
         return ResponseEntity.status(200).body("Scooter deleted!");
     }
+    //              EXTRA
 
-    @PutMapping("/assign/{companyId}/{scooterId}")
-    public ResponseEntity assignScooterToStation(@PathVariable Integer companyId,@PathVariable Integer scooterId){
-        scooterService.assignScooterToStation(companyId,scooterId);
+    @PutMapping("/assign/{stationId}/{scooterId}")
+    public ResponseEntity assignScooterToStation(@PathVariable Integer stationId,@PathVariable Integer scooterId){
+        scooterService.assignScooterToStation(stationId,scooterId);
         return ResponseEntity.status(200).body("ِِAssigend Successfully");
     }
 
+
+    @GetMapping("/by_model/{model}")
+    public ResponseEntity getAllByModel(@PathVariable Integer model){
+        return ResponseEntity.status(200).body(scooterService.byModel(model));
+    }
+
+    @PutMapping("/set_lock/{compnayId}/{scooterId}/{pinNumber}/{transName}")
+    public ResponseEntity setLock(Integer compnayId,Integer scooterId,Integer pinNumber , String transName){
+        scooterService.setLock(compnayId,scooterId,pinNumber,transName);
+        return ResponseEntity.status(200).body("Lock set Successfully");
+    }
+
+    //viewAllScooterAvalibale
+
+    @GetMapping("/viewall/")
+    public ResponseEntity getAllByModel(){
+        return ResponseEntity.status(200).body(scooterService.viewAvalibleScooter());
+    }
 
 }

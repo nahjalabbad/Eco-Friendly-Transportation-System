@@ -33,4 +33,21 @@ public class UserController {
         userService.deleteUser(userId);
         return ResponseEntity.status(200).body(new ApiResponse("User deleted"));
     }
+
+    //              EXTRA
+    @PutMapping("/addreview/{userId}/{rentalId}/{comment}/{rating}")
+    public ResponseEntity addCommentAndRating(@PathVariable Integer userId , @PathVariable Integer rentalId,@PathVariable String comment,@PathVariable Integer rating ){
+        userService.addCommentAndRating(userId , rentalId,comment,rating);
+        return ResponseEntity.status(200).body(new ApiResponse("user comment and rating added"));
+    }
+
+    @GetMapping("/getreview/{userId}/{rentalId}")
+    public ResponseEntity getReview(@PathVariable Integer userId , @PathVariable Integer rentalId){
+        return ResponseEntity.status(200).body(userService.getReview(userId , rentalId));
+    }
+
+    @GetMapping("/getrides/{userId}")
+    public ResponseEntity getTotalRides(@PathVariable Integer userId ){
+        return ResponseEntity.status(200).body(userService.getTotalRides(userId));
+    }
 }

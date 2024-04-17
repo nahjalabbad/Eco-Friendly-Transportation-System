@@ -35,4 +35,17 @@ public class CompanyController {
         companyService.deleteCompany(companyId);
         return ResponseEntity.status(200).body(new ApiResponse("Company deleted"));
     }
+
+    //              EXTRA
+
+    @PostMapping("/addtype/{companyId}/{transportationType}")
+    public ResponseEntity addTransportationType(@PathVariable Integer companyId ,  @PathVariable String transportationType){
+        companyService.addTransportationType(companyId,transportationType);
+        return ResponseEntity.status(200).body(new ApiResponse("Company Transportation Type added"));
+    }
+
+    @GetMapping("/gettype/{companyId}/{transportationType}")
+    public ResponseEntity getTransportationType(@PathVariable Integer companyId ,  @PathVariable String transportationType){
+        return ResponseEntity.status(200).body(companyService.getTransportationType(companyId,transportationType));
+    }
 }

@@ -36,4 +36,18 @@ public class RentController {
         rentService.deleteRent(rentId);
         return ResponseEntity.status(200).body(new ApiResponse("Rent Deleted"));
     }
+
+    //              EXTRA
+
+    @GetMapping("/available")
+    public ResponseEntity getAllAvailable(){
+        return ResponseEntity.status(200).body(rentService.byAvalablity());
+    }
+
+    // extra
+    @PutMapping("/return/{userId}/{companyName}/{transName}")
+    public ResponseEntity returnRent(@PathVariable Integer userId,@PathVariable String companyName, @PathVariable String transName){
+        rentService.returnRent(userId, companyName, transName);
+        return ResponseEntity.status(200).body(new ApiResponse("thank you, your return has been submitted"));
+    }
 }

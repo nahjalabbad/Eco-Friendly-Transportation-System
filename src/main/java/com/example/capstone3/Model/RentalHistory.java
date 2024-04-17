@@ -19,6 +19,9 @@ public class RentalHistory {
     @Id
     private Integer rentalId;
 
+    @Column(columnDefinition = "varchar(30) unique")
+    private String transportName;
+
     @Column(columnDefinition = "varchar(30)")
     private String PickUpStation;
 
@@ -39,6 +42,12 @@ public class RentalHistory {
 
     @Column(columnDefinition = "int")
     private Integer fuelLevel;
+
+    @Column(columnDefinition = "int ")
+    private Integer rating ;
+
+    @Column(columnDefinition = "varchar(20) ")
+    private String comment;
 
     @OneToOne
     @MapsId

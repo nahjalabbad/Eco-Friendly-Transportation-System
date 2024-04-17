@@ -1,5 +1,6 @@
 package com.example.capstone3.DTO;
 
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -15,8 +16,7 @@ public class RentalHistoryDTO {
     @NotNull(message = "rent id cannot be null")
     private Integer rentalId;
 
-    @NotNull(message = "rent id cannot be null")
-    private Integer userId;
+    private String transportName;
 
     @Size(max = 30)
     private String PickUpStation;
@@ -34,4 +34,8 @@ public class RentalHistoryDTO {
     private String status;
 
     private Integer fuelLevel;
+
+    private Integer rating ;
+
+    private String comment;
 }

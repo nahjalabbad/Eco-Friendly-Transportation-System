@@ -21,14 +21,13 @@ public class Company {
     private Integer companyId;
 
     @NotEmpty(message = "companyName should be not empty")
-    @Column(columnDefinition = "varchar(40) not null")
+    @Column(columnDefinition = "varchar(40) unique not null")
     private String companyName ;
 
     @NotNull(message = "quantity should not be empty")
     @Column(columnDefinition = "int not null ")
     private Integer quantity;
 
-    @Pattern(regexp = "^(Car|Bike|Scooter)$",  message = "transportType must be either Car, Bike, or Scooter")
     @Column(columnDefinition = "varchar(50)")
     private String transportType;
 

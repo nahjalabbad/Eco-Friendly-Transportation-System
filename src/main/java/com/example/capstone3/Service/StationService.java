@@ -1,11 +1,20 @@
 package com.example.capstone3.Service;
 
 import com.example.capstone3.API.ApiException;
+import com.example.capstone3.API.ApiResponse;
+import com.example.capstone3.Model.Rent;
 import com.example.capstone3.Model.Station;
+import com.example.capstone3.Repository.RentRepository;
 import com.example.capstone3.Repository.StationRepository;
 import com.example.capstone3.Repository.UserRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -14,7 +23,7 @@ import java.util.List;
 public class StationService {
 
     private final StationRepository stationRepository;
-    private final UserRepository userRepository;
+    private final RentRepository rentRepository;
 
     public List<Station> getStations() {
         return stationRepository.findAll();
@@ -46,5 +55,47 @@ public class StationService {
         }
         stationRepository.delete(station);
     }
+
+    public String getStationStatus(String stationName){
+        Station station=stationRepository.getStationByStationName(stationName);
+        if (station == null) {
+            throw new ApiException("station name not found");
+        }
+        return station.getStatus();
+    }
+
+
+
+
+    public void assignStationToRent(Integer stationId, Integer rentId){
+        Station station=stationRepository.findStationByStationId(stationId);
+        Rent rent= rentRepository.findRentByRentId(rentId);
+        if (station==null||rent==null){
+            throw new ApiException("station id or rent id not found");
+        }
+
+        rent.getStations().add(station);
+        station.getRents().add(rent);
+
+        stationRepository.save(station);
+        rentRepository.save(rent);
+    }
+
+    public List<Station> findStationByStatus(String status){
+        List<Station> getStationsStatus=stationRepository.findStationByStatus(status);
+        if (getStationsStatus.isEmpty()){
+            throw new ApiException("No stations under the state "+status+" are available");
+        }
+        return getStationsStatus;
+    }
+
+    public List<Station> findStationByHaveChargingStation(Boolean charging){
+        List<Station> getStationsWithCharging=stationRepository.findStationByHaveChargingStation(charging);
+        if (getStationsWithCharging.isEmpty()){
+            throw new ApiException("No stations under with charging feature are available");
+        }
+        return getStationsWithCharging;
+    }
+
 
 }

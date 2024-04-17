@@ -2,6 +2,7 @@ package com.example.capstone3.Model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,11 +16,13 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @NoArgsConstructor
+@Table(name = "Station")
 public class Station {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer stationId;
+
 
     @Column(columnDefinition = "varchar(30)")
     private String dropOffStation;
@@ -27,14 +30,15 @@ public class Station {
     @Column(columnDefinition = "varchar(30)")
     private String pickUpStation;
 
-    @Column(columnDefinition = "boolean default= false")
+    @Column(columnDefinition = "boolean default false")
     private Boolean haveChargingStation;
 
-    @Column(columnDefinition = "varchar(30)")
+    @NotNull(message = "capacity must be not empty")
+    @Column(columnDefinition = "varchar(30) not null")
     private Integer capacity;
 
-    @Pattern(regexp = "^(open|under maintenance | temporarily closed)")
-    @Column(columnDefinition = "varchar(60)")
+    @Pattern(regexp = "^(open|under maintenance|temporarily closed)")
+    @Column(columnDefinition = "varchar(60) not null")
     private String status;
 
     @ManyToMany(mappedBy = "stations")
@@ -46,8 +50,7 @@ public class Station {
     @ManyToMany(mappedBy = "stations")
     private Set<Scooter>scooters;
 
-    @ManyToOne
-    @JoinColumn(name = "renId", referencedColumnName = "rentId")
+    @ManyToMany
     @JsonIgnore
-    private Rent rent;
+    private Set<Rent> rents;
 }

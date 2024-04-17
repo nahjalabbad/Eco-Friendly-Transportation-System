@@ -21,8 +21,10 @@ public class Rent {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer rentId;
 
+    @Column(columnDefinition = "varchar(30) unique")
     private String dropOffLocation;
 
+    @Column(columnDefinition = "varchar(30) unique")
     private String pickUpLocation;
 
     @NotEmpty(message = "transportType should not be empty")
@@ -30,12 +32,25 @@ public class Rent {
     @Column(columnDefinition = "varchar(20)")
     private String transportType;
 
-    @NotEmpty(message = "rentStatus should not be empty")
+    @Column(columnDefinition = "int")
+    private Integer fuelPercentage;
+
+    @Column(columnDefinition = "varchar(30) unique")
+    private String transportName;
+
+
+    @Column(columnDefinition = "int unique")
+    @Max(4)
+    private Integer pinNumber;
+
+    @NotNull(message = "quantity must be not empty")
+    @Column(columnDefinition = "int not null")
+    private Integer quantity;
+
     @Pattern(regexp = "^(Rented|Not Rented|Not Available)$",  message = "rentStatus must be either Rented, Not Rented, or Not Available")
     @Column(columnDefinition = "varchar(20)")
     private String rentStatus;
 
-    @NotEmpty(message = "returnStatus should not be empty")
     @Pattern(regexp = "^(Returned|Not Returned)$",  message = "returnStatus must be either Returned or Not Returned")
     @Column(columnDefinition = "varchar(50)")
     private String returnStatus;
@@ -67,8 +82,8 @@ public class Rent {
     @ManyToMany(mappedBy = "rents")
     private Set<Scooter> scooters;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "rent")
-    private Set<Station>stations;
+    @ManyToMany(mappedBy = "rents")
+    private Set<Station> stations;
 
 
 

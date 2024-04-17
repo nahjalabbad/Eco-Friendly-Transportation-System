@@ -36,4 +36,21 @@ public class RentalHistoryController {
         rentalHistoryService.deleteRentalHistory(rentalId);
         return ResponseEntity.status(200).body(new ApiResponse("Rental history Deleted"));
     }
+
+    //              EXTRA
+
+    @GetMapping("/get-all-history/{userId}")
+    public ResponseEntity getAllHistory(@PathVariable Integer userId){
+        return ResponseEntity.status(200).body(rentalHistoryService.getAllHistory(userId));
+    }
+
+    @GetMapping("/get-history-type/{userId}/{transportType}")
+    public ResponseEntity getHistoryByType(@PathVariable Integer userId, @PathVariable String transportType){
+        return ResponseEntity.status(200).body(rentalHistoryService.getHistoryByType(userId,transportType));
+    }
+
+    @GetMapping("/get-history-status/{status}")
+    public ResponseEntity getByStatus( @PathVariable String status){
+        return ResponseEntity.status(200).body(rentalHistoryService.getByStatus(status));
+    }
 }

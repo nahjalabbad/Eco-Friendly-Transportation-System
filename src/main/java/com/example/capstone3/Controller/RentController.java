@@ -19,9 +19,9 @@ public class RentController {
         return ResponseEntity.status(200).body(rentService.getRent());
     }
 
-    @PostMapping("/add/{userId}")
-    public ResponseEntity addRent(@PathVariable Integer userId, @RequestBody @Valid Rent rent ){
-        rentService.addRent(userId,rent);
+    @PostMapping("/add/{userId}/{companyName}/{transName}")
+    public ResponseEntity addRent(@PathVariable Integer userId,@PathVariable String companyName, @PathVariable String transName, @RequestBody @Valid Rent rent ){
+        rentService.addRent(userId,companyName,transName,rent);
         return ResponseEntity.status(200).body(new ApiResponse("Rent Added and Assigned to user "));
     }
 

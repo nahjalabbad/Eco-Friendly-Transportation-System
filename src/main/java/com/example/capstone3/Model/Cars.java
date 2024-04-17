@@ -1,7 +1,5 @@
 package com.example.capstone3.Model;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -19,8 +17,13 @@ public class Cars {
     private Integer carId;
 
     @NotEmpty(message = "car type must be not empty")
-    @Column(columnDefinition = "varchar(20) not null")
+    @Pattern(regexp = "^(luxury|sedan|sport)")
+    @Column(columnDefinition = "varchar(20) unique")
     private String carType;
+
+    @NotEmpty(message = "car name must be not empty")
+    @Column(columnDefinition = "varchar(20) not null")
+    private String carName;
 
     @NotNull(message = "car model must be not empty")
     @Column(columnDefinition = "int not null ")
@@ -38,11 +41,13 @@ public class Cars {
     @Column(columnDefinition = "int not null")
     private Integer numSeats;
 
-    @NotNull(message = "Pin number must be not empty")
-    @Column(columnDefinition = "int unique")
-    @Pattern(regexp = "\\d{4}", message = "PIN must be exactly 4 digits")
+    @Column(columnDefinition = "int(4) unique")
+    @Max(5)
+    @Min(3)
     private Integer pinNumber;
 
+    @Column(columnDefinition = "varchar(20)")
+    private String rentStatus;
 
     @ManyToOne
     @JoinColumn(name = "companyId", referencedColumnName = "companyId")

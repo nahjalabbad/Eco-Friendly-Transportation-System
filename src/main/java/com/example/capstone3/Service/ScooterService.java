@@ -1,10 +1,9 @@
 package com.example.capstone3.Service;
 
 import com.example.capstone3.API.ApiException;
-import com.example.capstone3.Model.Company;
-import com.example.capstone3.Model.Scooter;
-import com.example.capstone3.Model.Station;
+import com.example.capstone3.Model.*;
 import com.example.capstone3.Repository.CompanyRepository;
+import com.example.capstone3.Repository.RentRepository;
 import com.example.capstone3.Repository.ScooterRepository;
 import com.example.capstone3.Repository.StationRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,16 +15,26 @@ public class ScooterService {
     private final ScooterRepository scooterRepository;
     private final CompanyRepository companyRepository;
     private final StationRepository stationRepository;
+    private final RentRepository rentRepository;
 
     public List<Scooter>getAllScooters(){
 return scooterRepository.findAll();
     }
     public void addScooter(Integer companyId,Scooter scooter){
         Company company= companyRepository.findCompanyByCompanyId(companyId);
+        Rent rent= rentRepository.findRentByTransportName(scooter.getScooterName());
         if(company==null){
             throw new ApiException("Company id not found!");
         }
+        if (rent==null){
+            throw new ApiException("change bname");
+        }
+        scooter.setRentStatus("not Rented");
+        rent.setRentStatus("not Rented");
+        rent.setTransportName(scooter.getScooterName());
+        rent.setFuelPercentage(scooter.getChargePercentage());
         scooterRepository.save(scooter);
+        rentRepository.save(rent);
     }
 
     public void updateScooter(Integer scooterId,Scooter newScooter){
@@ -60,5 +69,37 @@ return scooterRepository.findAll();
        station.getScooters().add(scooter);
         scooterRepository.save(scooter);
         stationRepository.save(station);
+    }
+
+    public String setLock(Integer compnayId,Integer scooterId,Integer pinNumber ,String transName){
+        Company company = companyRepository.findCompanyByCompanyId(compnayId);
+        Scooter scooter=scooterRepository.findScooterByScooterId(scooterId);
+        Rent rent = rentRepository.findRentByTransportName(transName);
+        if (scooterId == null || company == null) {
+            throw new ApiException("Can't setLock");
+        } else if (scooter.getPinNumber().equals(pinNumber)) {
+            throw new ApiException("set Pin number correctly");
+        }
+
+        rent.setPinNumber(scooter.getPinNumber());
+        return "Lock set Successfully";
+    }
+
+
+    public List<Scooter>byModel(Integer model){
+        List<Scooter> scooters=scooterRepository.findScooterByModel(model);
+        if ((scooters.isEmpty())){
+            throw new ApiException("not Avalabile");
+        }
+        return scooters;
+    }
+
+
+    public List<Scooter>viewAvalibleScooter(){
+            List<Scooter> scooters=scooterRepository.findScooterByRentStatus("Not Rented");
+        if(scooters.isEmpty()){
+            throw new ApiException("No Soocter Avalabile");
+        }
+        return scooters;
     }
 }

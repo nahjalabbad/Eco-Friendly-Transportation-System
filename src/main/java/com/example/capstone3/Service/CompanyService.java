@@ -2,7 +2,7 @@ package com.example.capstone3.Service;
 
 import com.example.capstone3.API.ApiException;
 import com.example.capstone3.Model.Company;
-import com.example.capstone3.Model.User;
+
 import com.example.capstone3.Repository.CompanyRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +19,7 @@ public class CompanyService {
     }
 
     public void addCompany(Company company){
+        company.setTransportType("Car");
         companyRepository.save(company);
     }
 
@@ -49,6 +50,7 @@ public class CompanyService {
 
             throw new ApiException("already registered this type");
         }
+
         c.setTransportType(transportationType);
         companyRepository.save(c);
     }

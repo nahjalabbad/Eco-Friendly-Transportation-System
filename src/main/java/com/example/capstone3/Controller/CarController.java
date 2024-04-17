@@ -44,6 +44,18 @@ public class CarController {
         return ResponseEntity.status(200).body("ِِAssigend Successfully");
     }
 
+    //              EXTRA
+
+    @PutMapping("/setlock/{compnayId}/{carId}/{pinNumber}/{transName}")
+    public ResponseEntity setLock(Integer compnayId,Integer carId,Integer pinNumber , String transName){
+        carsService.setLock(compnayId,carId,pinNumber,transName);
+        return ResponseEntity.status(200).body("Lock set Successfully");
+    }
+
+    @GetMapping("/details/{nameCar}")
+    public ResponseEntity getSpecificDetails(String nameCar){
+        return ResponseEntity.status(200).body(carsService.getSpecificDetails(nameCar));
+    }
 
 
 }

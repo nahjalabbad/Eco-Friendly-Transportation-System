@@ -23,13 +23,17 @@ public class RentalHistoryService {
         return rentalHistoryRepository.findAll();
     }
 
-    public void addRentalHistory( Integer userId ,RentalHistoryDTO rentalHistoryDTo) {
-        Rent rent = rentRepository.findRentByRentId(rentalHistoryDTo.getRentalId());
+    public void addRentalHistory( Integer rentId ,RentalHistoryDTO rentalHistoryDTo) {
+        Rent rent = rentRepository.findRentByRentId(rentId);
 
-        if (rent == null||! rent.getUser().getUserId().equals(userId)) {
+        if (rent == null) {
             throw new ApiException("rent not found or user id not found");
         }
-        RentalHistory rentalHistory = new RentalHistory(null, rentalHistoryDTo.getPickUpStation(),rentalHistoryDTo.getDropOffStation(),rentalHistoryDTo.getStartTime(),rentalHistoryDTo.getEndTime(),rentalHistoryDTo.getDuration(),rentalHistoryDTo.getStatus(), rentalHistoryDTo.getFuelLevel(), rent);
+
+        RentalHistory rentalHistory = new RentalHistory(
+        null, rentalHistoryDTo.getTransportName(),rentalHistoryDTo.getPickUpStation(),rentalHistoryDTo.getDropOffStation(),rentalHistoryDTo.getStartTime()
+        ,rentalHistoryDTo.getEndTime(),rentalHistoryDTo.getDuration(),rentalHistoryDTo.getStatus(),
+        rentalHistoryDTo.getFuelLevel(),rentalHistoryDTo.getRating(),rentalHistoryDTo.getComment(), rent);
         rentalHistory.setRent(rent);
         rentalHistoryRepository.save(rentalHistory);
     }
@@ -58,6 +62,10 @@ public class RentalHistoryService {
         }
         rentalHistoryRepository.delete(rentalHistory);
     }
+
+
+
+    //              EXTRA
 
     public List<RentalHistory> getAllHistory(Integer userId){
         List<RentalHistory> userRent=rentalHistoryRepository.findRentalHistoriesByUserId(userId);

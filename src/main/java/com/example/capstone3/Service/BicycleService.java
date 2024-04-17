@@ -23,19 +23,26 @@ public class BicycleService {
         return bicycleRepository.findAll();
     }
 
-    public void addBicycle(Integer companyId,Bicycle bicycle){
-        Company company= companyRepository.findCompanyByCompanyId(companyId);
-        Rent rent= rentRepository.findRentByTransportName(bicycle.getBicycleName());
-        if(company==null){
+    public void addBicycle(Integer companyId, Bicycle bicycle) {
+        Company company = companyRepository.findCompanyByCompanyId(companyId);
+        if (company == null) {
             throw new ApiException("Company id not found!");
         }
-        if (rent==null){
-            throw new ApiException("change bname");
-        }
-        bicycle.setRentStatus("not Rented");
-        rent.setRentStatus("not Rented");
+        Rent rent = new Rent();
+        rent.setRentStatus("Not Rented");
         rent.setTransportName(bicycle.getBicycleName());
+        rent.setFuelPercentage(0); // Assuming bicycles don't have fuel
+        rent.setQuantity(1); // Assuming quantity is 1 for each bicycle
+        // Set the transportType property of Rent if necessary
+        rent.setTransportType("Bicycle");
+
+        bicycle.setRentStatus("Not Rented");
+        bicycle.setCompany(company);
+
+        // Save the Rent object
         rentRepository.save(rent);
+
+        // Save the Bicycle object
         bicycleRepository.save(bicycle);
     }
 

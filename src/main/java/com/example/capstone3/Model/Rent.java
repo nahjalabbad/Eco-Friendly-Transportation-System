@@ -28,7 +28,7 @@ public class Rent {
     private String pickUpLocation;
 
     @NotEmpty(message = "transportType should not be empty")
-    @Pattern(regexp = "^(Car|Bike|Scooter)$",  message = "transportType must be either Car, Bike, or Scooter")
+    @Pattern(regexp = "^(Car|Bicycle|Scooter)$",  message = "transportType must be either Car, Bicycle, or Scooter")
     @Column(columnDefinition = "varchar(20)")
     private String transportType;
 

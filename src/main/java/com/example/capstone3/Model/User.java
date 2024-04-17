@@ -24,7 +24,7 @@ public class User {
 
     @Email
     @NotEmpty(message = "email should be not empty")
-    @Column(columnDefinition = "varchar(10) not null unique")
+    @Column(columnDefinition = "varchar(60) not null unique")
     private String email ;
 
     @NotNull(message = "age should be not empty")

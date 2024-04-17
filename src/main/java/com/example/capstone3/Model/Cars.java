@@ -41,9 +41,7 @@ public class Cars {
     @Column(columnDefinition = "int not null")
     private Integer numSeats;
 
-    @Column(columnDefinition = "int(4) unique")
-    @Max(5)
-    @Min(3)
+    @Column(columnDefinition = "int unique")
     private Integer pinNumber;
 
     @Column(columnDefinition = "varchar(20)")

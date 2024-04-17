@@ -23,12 +23,13 @@ public class RentService {
         return rentRepository.findAll();
     }
 
-    public String addRent(Integer userId, String companyName, String transName, Rent rent) {
+    public String addRent(Integer userId, String companyName, String transName, Rent rent1) {
         User user = userRepository.findUserByUserId(userId);
-        rent = rentRepository.findRentByTransportName(transName);
+        Rent rent = rentRepository.findRentByTransportName(transName); // Using a different variable name
         Company company = companyRepository.findCompanyByCompanyName(companyName);
 
         Station station = stationRepository.getStationByStationName(rent.getPickUpLocation());
+        Station station1 = stationRepository.getStationByStationName(rent.getDropOffLocation());
 
         if (user == null || company == null) {
             throw new ApiException("Can't Rent");
@@ -44,15 +45,19 @@ public class RentService {
 
         station.setCapacity(station.getCapacity() - rent.getQuantity());
 
-        RentalHistoryDTO rentalHistoryDTO=new RentalHistoryDTO(null,rent.getTransportName(),rent.getPickUpLocation(),rent.getDropOffLocation()
-                ,rent.getStartDate(),rent.getEndDate(),rent.getDuration(),null,rent.getFuelPercentage(),null,null);
+        RentalHistoryDTO rentalHistoryDTO = new RentalHistoryDTO(null, rent.getTransportName(), rent.getPickUpLocation(), rent.getDropOffLocation(),
+                rent.getStartDate(), rent.getEndDate(), rent.getDuration(), null, rent.getFuelPercentage(), null, null);
         companyRepository.save(company);
-        rentRepository.save(rent);
         userRepository.save(user);
+        stationRepository.save(station1);
         stationRepository.save(station);
+
+        rentRepository.save(rent);
+        rentRepository.save(rent1);
 
         return "thank you for renting " + rent.getPinNumber();
     }
+
 
 
     public void updateRent(Integer rentId, Rent rent) {

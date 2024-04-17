@@ -44,7 +44,6 @@ public class Scooter {
     private Integer chargePercentage;
 
     @Column(columnDefinition = "int unique")
-    @Max(5)
     private Integer pinNumber;
 
     @Pattern(regexp = "^(Rented|Not Rented|Not Available)$",  message = "rentStatus must be either Rented, Not Rented, or Not Available")

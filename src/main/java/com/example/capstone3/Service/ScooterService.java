@@ -20,21 +20,27 @@ public class ScooterService {
     public List<Scooter>getAllScooters(){
 return scooterRepository.findAll();
     }
-    public void addScooter(Integer companyId,Scooter scooter){
-        Company company= companyRepository.findCompanyByCompanyId(companyId);
-        Rent rent= rentRepository.findRentByTransportName(scooter.getScooterName());
-        if(company==null){
+    public void addScooter(Integer companyId, Scooter scooter) {
+        Company company = companyRepository.findCompanyByCompanyId(companyId);
+        if (company == null) {
             throw new ApiException("Company id not found!");
         }
-        if (rent==null){
-            throw new ApiException("change bname");
-        }
-        scooter.setRentStatus("not Rented");
-        rent.setRentStatus("not Rented");
+        Rent rent = new Rent();
+        rent.setRentStatus("Not Rented");
         rent.setTransportName(scooter.getScooterName());
         rent.setFuelPercentage(scooter.getChargePercentage());
-        scooterRepository.save(scooter);
+        rent.setQuantity(1); // Assuming quantity is 1 for each scooter
+        // Set the transportType property of Rent if necessary
+        rent.setTransportType("Scooter");
+
+        scooter.setRentStatus("Not Rented");
+        scooter.setCompany(company);
+
+        // Save the Rent object
         rentRepository.save(rent);
+
+        // Save the Scooter object
+        scooterRepository.save(scooter);
     }
 
     public void updateScooter(Integer scooterId,Scooter newScooter){

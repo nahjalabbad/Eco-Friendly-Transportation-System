@@ -14,32 +14,48 @@ public class CarsService {
 private final CarsRepository carsRepositry;
 private final CompanyRepository companyRepository;
 private final StationRepository stationRepository;
-private final RentalHistoryRepository rentalHistoryRepository;
     private final RentRepository rentRepository;
 
 public List<Cars>getAllCars(){
     return carsRepositry.findAll();
 }
 
-public void addCars(Integer companyId,Cars car){
-    Company company= companyRepository.findCompanyByCompanyId(companyId);
-    Rent rent= rentRepository.findRentByTransportName(car.getCarName());
-    if(company==null||!company.getTransportType().equalsIgnoreCase("Cars")){
-        throw new ApiException("Company id not found!");
-    }
-    if (rent==null){
-        throw new ApiException("change bname");
-    }
-    car.setRentStatus("not Rented");
-    rent.setRentStatus("not Rented");
-    rent.setTransportName(car.getCarName());
-    rent.setFuelPercentage(car.getFuelPercentage());
-    car.setCompany(company);
-    rentRepository.save(rent);
-    carsRepositry.save(car);
-}
+    public void addCars(Integer companyId, Cars car) {
+        Company company = companyRepository.findCompanyByCompanyId(companyId);
+        if (company == null) {
+            throw new ApiException("Company id not found!");
+        }
+        if (!company.getTransportType().equalsIgnoreCase("Car")) {
+            throw new ApiException("Company transport type does not match");
+        }
 
-public  void updateCars(Integer carId,Cars NewCar){
+        // Ensure that the required properties of the Car object are set
+        if (car.getCarName() == null || car.getFuelPercentage() == null) {
+            throw new ApiException("Car name and fuel percentage must be provided");
+        }
+
+        // Create a new Rent object
+        Rent rent = new Rent();
+        rent.setRentStatus("Not Rented");
+        rent.setTransportName(car.getCarName());
+        rent.setFuelPercentage(car.getFuelPercentage());
+        rent.setQuantity(1); // Assuming quantity is 1 for each car
+        // Set the transportType property of Rent if necessary
+        rent.setTransportType("Car");
+
+        // Set the company for the car
+        car.setCompany(company);
+
+        // Save the Rent object
+        rentRepository.save(rent);
+
+        // Save the Car object
+        carsRepositry.save(car);
+    }
+
+
+
+    public  void updateCars(Integer carId,Cars NewCar){
     Cars car= carsRepositry.findCarsByCarId(carId);
     if(car==null){
         throw new ApiException("Car id not found!");

@@ -37,7 +37,6 @@ public class Bicycle {
     private Integer numOfWheels;
 
     @Column(columnDefinition = "int unique")
-    @Max(5)
     private Integer pinNumber;
 
     @NotEmpty(message = "location must be not empty ")

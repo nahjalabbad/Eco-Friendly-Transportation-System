@@ -57,29 +57,14 @@ public class StationService {
         stationRepository.delete(station);
     }
 
+    //Extra
+
     public String getStationStatus(String stationName){
         Station station=stationRepository.getStationByStationName(stationName);
         if (station == null) {
             throw new ApiException("station name not found");
         }
         return station.getStatus();
-    }
-
-
-
-
-    public void assignStationToRent(Integer stationId, Integer rentId){
-        Station station=stationRepository.findStationByStationId(stationId);
-        Rent rent= rentRepository.findRentByRentId(rentId);
-        if (station==null||rent==null){
-            throw new ApiException("station id or rent id not found");
-        }
-
-        rent.getStations().add(station);
-        station.getRents().add(rent);
-
-        stationRepository.save(station);
-        rentRepository.save(rent);
     }
 
     public List<Station> findStationByStatus(String status){

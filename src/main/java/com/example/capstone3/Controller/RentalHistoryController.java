@@ -53,4 +53,9 @@ public class RentalHistoryController {
     public ResponseEntity getByStatus( @PathVariable String status){
         return ResponseEntity.status(200).body(rentalHistoryService.getByStatus(status));
     }
+
+    @GetMapping("/get-review/{transName}")
+    public ResponseEntity getReview(@PathVariable String transName){
+        return ResponseEntity.status(200).body(rentalHistoryService.getReview(transName));
+    }
 }

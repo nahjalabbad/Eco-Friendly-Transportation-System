@@ -38,22 +38,10 @@ public class ScooterController {
     }
     //              EXTRA
 
-    @PutMapping("/assign/{stationId}/{scooterId}")
-    public ResponseEntity assignScooterToStation(@PathVariable Integer stationId,@PathVariable Integer scooterId){
-        scooterService.assignScooterToStation(stationId,scooterId);
-        return ResponseEntity.status(200).body("ِِAssigend Successfully");
-    }
-
 
     @GetMapping("/by_model/{model}")
     public ResponseEntity getAllByModel(@PathVariable Integer model){
         return ResponseEntity.status(200).body(scooterService.byModel(model));
-    }
-
-    @PutMapping("/set_lock/{compnayId}/{scooterId}/{pinNumber}/{transName}")
-    public ResponseEntity setLock(Integer compnayId,Integer scooterId,Integer pinNumber , String transName){
-        scooterService.setLock(compnayId,scooterId,pinNumber,transName);
-        return ResponseEntity.status(200).body("Lock set Successfully");
     }
 
     //viewAllScooterAvalibale
@@ -61,6 +49,11 @@ public class ScooterController {
     @GetMapping("/viewall/")
     public ResponseEntity getAllByModel(){
         return ResponseEntity.status(200).body(scooterService.viewAvalibleScooter());
+    }
+
+    @GetMapping("/ava-rating/{scooterName}")
+    public ResponseEntity getAvgRating(@PathVariable String scooterName){
+        return ResponseEntity.status(200).body(scooterService.getAvgRating(scooterName));
     }
 
 }

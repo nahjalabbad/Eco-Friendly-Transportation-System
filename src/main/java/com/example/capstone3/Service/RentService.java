@@ -63,7 +63,7 @@ public class RentService {
 
         rentToUse.setRentStatus("Rented");
         rentToUse.setDuration(duration);
-
+        rentToUse.setUser(user);
 
         RentalHistoryDTO rentalHistoryDTO = new RentalHistoryDTO(null, user.getUserId(), rentToUse.getTransportName(),
                 rentToUse.getPickUpLocation(), rentToUse.getDropOffLocation(), rentToUse.getStartDate(),
@@ -76,8 +76,34 @@ public class RentService {
         stationRepository.save(station);
         rentalHistoryRepository.save(rentalHistory);
 
-        return "Thank you for renting " + rentToUse.getTransportName();
+        return "Thank you for renting your pin number is " + rentToUse.getPinNumber();
     }
+
+    public void updateRent(Integer rentId, Rent rent) {
+        Rent r = rentRepository.findRentByRentId(rentId);
+        if (r == null) {
+            throw new ApiException("Rent not found");
+        }
+        r.setDropOffLocation(rent.getDropOffLocation());
+        r.setPickUpLocation(rent.getPickUpLocation());
+        r.setTransportType(rent.getTransportType());
+        r.setRentStatus(rent.getRentStatus());
+        r.setReturnStatus(rent.getReturnStatus());
+        r.setStartDate(rent.getStartDate());
+        r.setEndDate(rent.getEndDate());
+        r.setDuration(rent.getDuration());
+        rentRepository.save(r);
+    }
+
+    public void deleteRent(Integer rentId) {
+        Rent r = rentRepository.findRentByRentId(rentId);
+        if (r == null) {
+            throw new ApiException("Rent not found");
+        }
+        rentRepository.delete(r);
+    }
+
+    //Extra
 
     private Rent createRent(Object transport, String transName, String duration, Rent rent) {
         if (transport == null) {
@@ -157,34 +183,6 @@ public class RentService {
         return rentToUse;
     }
 
-
-
-
-    public void updateRent(Integer rentId, Rent rent) {
-        Rent r = rentRepository.findRentByRentId(rentId);
-        if (r == null) {
-            throw new ApiException("Rent not found");
-        }
-        r.setDropOffLocation(rent.getDropOffLocation());
-        r.setPickUpLocation(rent.getPickUpLocation());
-        r.setTransportType(rent.getTransportType());
-        r.setRentStatus(rent.getRentStatus());
-        r.setReturnStatus(rent.getReturnStatus());
-        r.setStartDate(rent.getStartDate());
-        r.setEndDate(rent.getEndDate());
-        r.setDuration(rent.getDuration());
-        rentRepository.save(r);
-    }
-
-    public void deleteRent(Integer rentId) {
-        Rent r = rentRepository.findRentByRentId(rentId);
-        if (r == null) {
-            throw new ApiException("Rent not found");
-        }
-        rentRepository.delete(r);
-    }
-
-
     public void returnRent(Integer userId, String companyName, String transName) {
         User user = userRepository.findUserByUserId(userId);
         Rent rent = rentRepository.findRentByTransportName(transName);
@@ -197,7 +195,13 @@ public class RentService {
 
         company.setQuantity(company.getQuantity() + rent.getQuantity());
         rent.setRentStatus("Not Rented");
-        rent.setFuelPercentage(rent.getFuelPercentage() - 20);
+
+        if (rent.getFuelPercentage()==0){
+            throw new ApiException("the fuel is already at 0");
+        }
+         else {
+             rent.setFuelPercentage(rent.getFuelPercentage() - 20);
+        }
 
         companyRepository.save(company);
         rentRepository.save(rent);
@@ -233,7 +237,7 @@ public class RentService {
         return avalabiles;
     }
 
-    public Integer pricePerDuration(String duration,Integer price) {
+    private Integer pricePerDuration(String duration,Integer price) {
         Rent rent=rentRepository.getRentByPrice(price);
         switch (duration) {
             case "1 Day":

@@ -35,16 +35,13 @@ public class UserController {
     }
 
     //              EXTRA
-    @PutMapping("/addreview/{userId}/{rentalId}/{comment}/{rating}")
-    public ResponseEntity addCommentAndRating(@PathVariable Integer userId , @PathVariable Integer rentalId,@PathVariable String comment,@PathVariable Integer rating ){
-        userService.addCommentAndRating(userId , rentalId,comment,rating);
+    @PutMapping("/addreview/{userId}/{rentalId}/{rating}")
+    public ResponseEntity addCommentAndRating(@PathVariable Integer userId , @PathVariable Integer rentalId,@PathVariable Integer rating, @RequestBody @Valid String comment ){
+        userService.addCommentAndRating(userId , rentalId,rating, comment);
         return ResponseEntity.status(200).body(new ApiResponse("user comment and rating added"));
     }
 
-    @GetMapping("/getreview/{userId}/{rentalId}")
-    public ResponseEntity getReview(@PathVariable Integer userId , @PathVariable Integer rentalId){
-        return ResponseEntity.status(200).body(userService.getReview(userId , rentalId));
-    }
+
 
     @GetMapping("/getrides/{userId}")
     public ResponseEntity getTotalRides(@PathVariable Integer userId ){

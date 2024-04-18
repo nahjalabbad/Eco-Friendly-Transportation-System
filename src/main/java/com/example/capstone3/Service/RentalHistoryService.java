@@ -98,6 +98,17 @@ public class RentalHistoryService {
         return userRent;
     }
 
+    public List<String> getReview( String transName){
+        List<String> comment = rentalHistoryRepository.getRatingsByTransportName(transName);
+
+
+        if(comment.isEmpty()){
+            throw new ApiException("Transport name is not found");
+        }
+
+        return comment;
+    }
+
 
 
 }

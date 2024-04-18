@@ -15,6 +15,7 @@ private final CarsRepository carsRepository;
 private final CompanyRepository companyRepository;
 private final StationRepository stationRepository;
     private final RentRepository rentRepository;
+    private final RentalHistoryRepository rentalHistoryRepository;
 
 public List<Cars>getAllCars(){
     return carsRepository.findAll();
@@ -59,18 +60,7 @@ public void deleteCar(Integer carId){
     carsRepository.delete(car);
 }
 
-
-public void assignCarsToStation(Integer carId,Integer stationId){
-    Cars car= carsRepository.findCarsByCarId(carId);
-    Station station= stationRepository.findStationByStationId(stationId);
-    if(car==null||station==null){
-        throw new ApiException("Can't Assigned");
-    }
-    car.getStations().add(station);
-    station.getCars().add(car);
-    carsRepository.save(car);
-    stationRepository.save(station);
-}
+//Extra
 
 public List<Cars> viewCarsByType(String carType){
     List<Cars> c = carsRepository.findCarsByCarType(carType);
@@ -102,51 +92,22 @@ public String getSpecificDetails(String carName){
             + car.getLocation();
 }
 
-    public String setLock(Integer compnayId,Integer carId,Integer pinNumber , String transName){
-        Company company = companyRepository.findCompanyByCompanyId(compnayId);
-        Cars car= carsRepository.findCarsByCarId(carId);
-        Rent rent = rentRepository.findRentByTransportName(transName);
-        if (car == null || company == null) {
-            throw new ApiException("Can't setLock");
-        } else if (car.getPinNumber().equals(pinNumber)) {
-            throw new ApiException("set Pin number correctly");
-        }
-        rent.setPinNumber(car.getPinNumber());
 
-        return "Lock set Successfully";
+    public Double getAvgRating(String carName) {
+        List<RentalHistory> rentalHistories = rentalHistoryRepository.findRentalHistoriesByTransportName(carName);
+        double sum = 0;
+        int count = 0;
+
+        if (rentalHistories.isEmpty()) {
+            throw new ApiException("No rental history found for this car name");
+        }
+
+        for (RentalHistory rh : rentalHistories) {
+            sum += rh.getRating();
+            count++;
+        }
+
+        return sum / count;
     }
 
-
-//public Double getAverageRating( String carName ) {
-//    Cars car=carsRepositry.findCarsByCarName(carName);
-//    if(car==null){
-//        throw new ApiException("Car name not found!");
-//    }
-//    double sum = 0;
-//    int count = 0;
-//    boolean found = false;
-//
-//
-//
-//
-//}
-//
-//    public Double getAvgRating(String pName) {
-//        double sum = 0;
-//        int count = 0;
-//        boolean found = false;
-//        for (ProductReview p : reviews) {
-//            for (Product product : productService.products) {
-//                if (product.getName().equalsIgnoreCase(pName)) {
-//                    sum += p.getRating();
-//                    count++;
-//                    found = true;
-//                }
-//            }
-//        }
-//        if (!found || count == 0) {
-//            return null;
-//        }
-//        return sum / count;
-//    }
 }

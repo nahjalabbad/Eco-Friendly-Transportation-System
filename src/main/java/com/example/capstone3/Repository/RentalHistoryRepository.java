@@ -20,12 +20,13 @@ public interface RentalHistoryRepository extends JpaRepository<RentalHistory,Int
 
     List<RentalHistory> findRentalHistoriesByStatus(String status);
 
-    @Query("select name from RentalHistory name where name.rating=?1")
-    List<RentalHistory> findRentalHistoriesByRating(Integer rating);
+    List<RentalHistory> findRentalHistoriesByTransportName(String name);
 
 
     RentalHistory findRentalHistoriesByRent(Rent rent );
 
 
-    RentalHistory findRentalHistoriesByTransportName(String transportName );
+    @Query("SELECT review.comment FROM RentalHistory review WHERE review.transportName = ?1")
+    List<String> getRatingsByTransportName(String name);
+
 }

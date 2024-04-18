@@ -44,8 +44,8 @@ public class CompanyController {
         return ResponseEntity.status(200).body(new ApiResponse("Company Transportation Type added"));
     }
 
-    @GetMapping("/gettype/{companyId}/{transportationType}")
-    public ResponseEntity getTransportationType(@PathVariable Integer companyId ,  @PathVariable String transportationType){
-        return ResponseEntity.status(200).body(companyService.getTransportationType(companyId,transportationType));
+    @GetMapping("/gettype/{transportationType}")
+    public ResponseEntity getTransportationType(@PathVariable String transportationType){
+        return ResponseEntity.status(200).body(companyService.getTransportationType(transportationType));
     }
 }

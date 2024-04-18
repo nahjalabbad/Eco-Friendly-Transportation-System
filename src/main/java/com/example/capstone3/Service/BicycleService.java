@@ -58,30 +58,7 @@ public class BicycleService {
         bicycleRepository.delete(bicycle);
     }
 
-    public void assignBicycleToStation(Integer bicycleId,Integer stationId){
-        Bicycle bicycle=bicycleRepository.findBicycleByBicycleId(bicycleId);
-        Station station= stationRepository.findStationByStationId(stationId);
-        if(bicycle==null||station==null){
-            throw new ApiException("Can't Assigned");
-        }
-        bicycle.getStations().add(station);
-        station.getBicycles().add(bicycle);
-        bicycleRepository.save(bicycle);
-        stationRepository.save(station);
-    }
-
-
-    public void setLock(Integer compnayId,Integer bicycleId,Integer pinNumber , String transName){
-        Company company = companyRepository.findCompanyByCompanyId(compnayId);
-        Bicycle bicycle=bicycleRepository.findBicycleByBicycleId(bicycleId);
-        Rent rent = rentRepository.findRentByTransportName(transName);
-        if (bicycle == null || company == null) {
-            throw new ApiException("Can't setLock");
-        } else if (bicycle.getPinNumber().equals(pinNumber)) {
-            throw new ApiException("set Pin number correctly");
-        }
-        rent.setPinNumber(bicycle.getPinNumber());
-    }
+    //Extra
 
     public List<Bicycle>byTypeWeels(Integer numberOfWeels){
         List<Bicycle> bicycles=bicycleRepository.findBicycleByNumOfWheels(numberOfWeels);
@@ -107,8 +84,6 @@ public class BicycleService {
         return bicycles;
     }
 
-
-
     public String getSpecificDetails(String bicycleName){
         Bicycle bicycle=bicycleRepository.findBicycleByBicycleName(bicycleName);
         if(bicycle==null){
@@ -117,23 +92,20 @@ public class BicycleService {
         return  " Bicycle Details: " + bicycle.getBicycleName() + " " + bicycle.getModel() +" "+ bicycle.getReturnStatus() + " " + bicycle.getFeatures() + "  " + bicycle.getLocation() + "  " + bicycle.getNumOfWheels() ;
     }
 
-
-    public Double getAvgRating(String bickName) {
-     RentalHistory r = rentalHistoryRepository.findRentalHistoriesByTransportName(bickName);
-    List <RentalHistory> rentalHistory=rentalHistoryRepository.findAll();
+    public Double getAvgRating(String bicycleName) {
+        List<RentalHistory> rentalHistories = rentalHistoryRepository.findRentalHistoriesByTransportName(bicycleName);
         double sum = 0;
         int count = 0;
-        boolean found = false;
-            for (RentalHistory rh:rentalHistory){
-                if (r.getTransportName().equalsIgnoreCase("bickName")) {
-                    sum += r.getRating();
-                    count++;
-                    found = true;
-                }
-            }
-        if (!found || count == 0) {
-            throw new ApiException("no bicycle with this name found");
+
+        if (rentalHistories.isEmpty()) {
+            throw new ApiException("No rental history found for this bicycle name");
         }
+
+        for (RentalHistory rh : rentalHistories) {
+            sum += rh.getRating();
+            count++;
+        }
+
         return sum / count;
     }
 

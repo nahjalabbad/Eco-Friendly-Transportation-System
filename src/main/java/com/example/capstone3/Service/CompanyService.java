@@ -41,6 +41,8 @@ public class CompanyService {
         companyRepository.delete(c);
     }
 
+    //extra
+
     public void addTransportationType(Integer companyId , String transportationType){
         Company c = companyRepository.findCompanyByCompanyId(companyId);
         if(c==null){
@@ -55,8 +57,8 @@ public class CompanyService {
         companyRepository.save(c);
     }
 
-    public List<Company> getTransportationType(Integer companyId , String transportationType){
-        List<Company> c = companyRepository.findCompanyByCompanyIdAndTransportType(companyId, transportationType);
+    public List<Company> getTransportationType(String transportationType){
+        List<Company> c = companyRepository.findCompanyByTransportType(transportationType);
         if(c==null){
             throw new ApiException("Company not found");
         }

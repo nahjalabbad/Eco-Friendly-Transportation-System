@@ -22,7 +22,7 @@ public class RentalHistory {
     @Column(columnDefinition = "int")
     private Integer userId;
 
-    @Column(columnDefinition = "varchar(30) unique")
+    @Column(columnDefinition = "varchar(30)")
     private String transportName;
 
     @Column(columnDefinition = "varchar(30)")

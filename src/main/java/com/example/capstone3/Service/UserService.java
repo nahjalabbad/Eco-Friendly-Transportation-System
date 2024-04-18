@@ -48,28 +48,28 @@ public class UserService {
         userRepository.delete(u);
     }
 
-    public void addCommentAndRating(Integer userId , Integer rentalId, String comment, Integer rating){
+
+    //EXTRA
+
+    public void addCommentAndRating(Integer userId , Integer rentalId, Integer rating,String comment){
         User u = userRepository.findUserByUserId(userId);
         RentalHistory r = rentalHistoryRepository.findRentalHistoryByRentalId(rentalId);
 
+
         if(u==null || r==null){
             throw new ApiException("User not found");
+        }
+        if (!r.getUserId().equals(userId)){
+            throw new ApiException("the rental history is not attached to this user");
         }
         u.setRating(rating);
         u.setComment(comment);
         userRepository.save(u);
+        r.setRating(rating);
+        r.setComment(comment);
+        rentalHistoryRepository.save(r);
     }
 
-    public String getReview(Integer userId , Integer rentalId){
-        User u = userRepository.findUserByUserId(userId);
-        RentalHistory r = rentalHistoryRepository.findRentalHistoryByRentalId(rentalId);
-
-        if(u==null || r==null){
-            throw new ApiException("User not found");
-        }
-
-        return u.getComment()+" "+u.getRating();
-    }
 
     public String getTotalRides(Integer userId ){
         User u = userRepository.findUserByUserId(userId);

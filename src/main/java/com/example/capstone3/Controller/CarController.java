@@ -1,4 +1,5 @@
 package com.example.capstone3.Controller;
+import com.example.capstone3.API.ApiResponse;
 import com.example.capstone3.Model.Cars;
 import com.example.capstone3.Service.CarsService;
 import jakarta.validation.Valid;
@@ -38,19 +39,7 @@ public class CarController {
         return ResponseEntity.status(200).body("Car deleted!");
     }
 
-    @PutMapping("/assign/{stationId}/{carId}")
-    public ResponseEntity assignCarsToStation(@PathVariable Integer stationId,@PathVariable Integer carId){
-        carsService.assignCarsToStation(stationId,carId);
-        return ResponseEntity.status(200).body("ِِAssigend Successfully");
-    }
-
     //              EXTRA
-
-    @PutMapping("/setlock/{compnayId}/{carId}/{pinNumber}/{transName}")
-    public ResponseEntity setLock(Integer compnayId,Integer carId,Integer pinNumber , String transName){
-        carsService.setLock(compnayId,carId,pinNumber,transName);
-        return ResponseEntity.status(200).body("Lock set Successfully");
-    }
 
     @GetMapping("/details/{nameCar}")
     public ResponseEntity getSpecificDetails(String nameCar){
@@ -69,4 +58,8 @@ public class CarController {
         return ResponseEntity.status(200).body(carsService.viewAllCars());
     }
 
+    @GetMapping("/avrg/{carName}")
+    public ResponseEntity getAvrgRating(@PathVariable String carName){
+        return ResponseEntity.status(200).body(new ApiResponse("Average rating for "+carName+" is "+carsService.getAvgRating(carName)));
+    }
 }

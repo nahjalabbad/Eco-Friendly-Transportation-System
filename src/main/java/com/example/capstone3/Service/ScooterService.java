@@ -2,10 +2,7 @@ package com.example.capstone3.Service;
 
 import com.example.capstone3.API.ApiException;
 import com.example.capstone3.Model.*;
-import com.example.capstone3.Repository.CompanyRepository;
-import com.example.capstone3.Repository.RentRepository;
-import com.example.capstone3.Repository.ScooterRepository;
-import com.example.capstone3.Repository.StationRepository;
+import com.example.capstone3.Repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -16,6 +13,8 @@ public class ScooterService {
     private final CompanyRepository companyRepository;
     private final StationRepository stationRepository;
     private final RentRepository rentRepository;
+    private final RentalHistoryRepository rentalHistoryRepository;
+
 
     public List<Scooter>getAllScooters(){
 return scooterRepository.findAll();
@@ -56,32 +55,8 @@ return scooterRepository.findAll();
         scooterRepository.delete(scooter);
     }
 
-    public void assignScooterToStation(Integer scooterId,Integer stationId){
-        Scooter scooter=scooterRepository.findScooterByScooterId(scooterId);
-        Station station= stationRepository.findStationByStationId(stationId);
-        if(scooterId==null||station==null){
-            throw new ApiException("Can't Assigned");
-        }
-        scooter.getStations().add(station);
-       station.getScooters().add(scooter);
-        scooterRepository.save(scooter);
-        stationRepository.save(station);
-    }
 
-    public String setLock(Integer compnayId,Integer scooterId,Integer pinNumber ,String transName){
-        Company company = companyRepository.findCompanyByCompanyId(compnayId);
-        Scooter scooter=scooterRepository.findScooterByScooterId(scooterId);
-        Rent rent = rentRepository.findRentByTransportName(transName);
-        if (scooterId == null || company == null) {
-            throw new ApiException("Can't setLock");
-        } else if (scooter.getPinNumber().equals(pinNumber)) {
-            throw new ApiException("set Pin number correctly");
-        }
-
-        rent.setPinNumber(scooter.getPinNumber());
-        return "Lock set Successfully";
-    }
-
+    //Extra
 
     public List<Scooter>byModel(Integer model){
         List<Scooter> scooters=scooterRepository.findScooterByModel(model);
@@ -98,5 +73,22 @@ return scooterRepository.findAll();
             throw new ApiException("No Soocter Avalabile");
         }
         return scooters;
+    }
+
+    public Double getAvgRating(String scooterName) {
+        List<RentalHistory> rentalHistories = rentalHistoryRepository.findRentalHistoriesByTransportName(scooterName);
+        double sum = 0;
+        int count = 0;
+
+        if (rentalHistories.isEmpty()) {
+            throw new ApiException("No rental history found for this bicycle name");
+        }
+
+        for (RentalHistory rh : rentalHistories) {
+            sum += rh.getRating();
+            count++;
+        }
+
+        return sum / count;
     }
 }

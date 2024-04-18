@@ -42,12 +42,6 @@ public class StationController {
 
     //              EXTRA
 
-    @PutMapping("/assign-station/{stationId}/{rentId}")
-    public ResponseEntity assignStationToRent(@PathVariable Integer stationId, @PathVariable Integer rentId){
-        stationService.assignStationToRent(stationId, rentId);
-        return ResponseEntity.status(200).body(new ApiResponse("Vehicle has been assigned to a station"));
-    }
-
     @GetMapping("/get-astation-status/{stationName}")
     public ResponseEntity getStationStatus(@PathVariable String stationName ){
         return ResponseEntity.status(200).body(stationService.getStationStatus(stationName));

@@ -37,7 +37,7 @@ public class User {
 
     @NotEmpty(message = "password should be not empty")
     @Size(min = 5 , message = "password should be more than 4 char")
-    @Column(columnDefinition = "varchar(15) not null unique")
+    @Column(columnDefinition = "varchar(15) not null ")
     private String password ;
 
     @Column(columnDefinition = "int ")

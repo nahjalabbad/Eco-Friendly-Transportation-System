@@ -10,8 +10,8 @@ import java.util.List;
 @Repository
 public interface CompanyRepository extends JpaRepository<Company,Integer> {
     Company findCompanyByCompanyId(Integer id);
-//    @Query("select company from Company company where company.companyId=?1 and company")
-    List<Company> findCompanyByCompanyIdAndTransportType(Integer id,String transportType);
+
+    List<Company> findCompanyByTransportType(String transportType);
 
     Company findCompanyByCompanyName(String companyName);
 

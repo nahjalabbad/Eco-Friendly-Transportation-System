@@ -79,7 +79,7 @@ public class BicycleService {
     public List<Bicycle>viewAValibalAllBick(){
         List<Bicycle> bicycles=bicycleRepository.findBicycleByRentStatus("Not Rented");
         if(bicycles.isEmpty()){
-            throw new ApiException("No Bick Avalabile");
+            throw new ApiException("No Bicycle are available");
         }
         return bicycles;
     }
@@ -87,7 +87,7 @@ public class BicycleService {
     public String getSpecificDetails(String bicycleName){
         Bicycle bicycle=bicycleRepository.findBicycleByBicycleName(bicycleName);
         if(bicycle==null){
-            throw new ApiException("Car name not found!");
+            throw new ApiException("Bicycle name not found!");
         }
         return  " Bicycle Details: " + bicycle.getBicycleName() + " " + bicycle.getModel() +" "+ bicycle.getReturnStatus() + " " + bicycle.getFeatures() + "  " + bicycle.getLocation() + "  " + bicycle.getNumOfWheels() ;
     }

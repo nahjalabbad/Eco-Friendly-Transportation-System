@@ -78,19 +78,17 @@ public List<Cars> viewAllCars(){
         return c;
     }
 
-public String getSpecificDetails(String carName){
-    Cars car= carsRepository.findCarsByCarName(carName);
-    if(car==null){
-        throw new ApiException("Car name not found!");
+public Cars getSpecificDetails(String carName) {
+    Cars car = carsRepository.findCarsByCarName(carName);
+    if (car == null) {
+        throw new ApiException("Car not found!");
+    } else if (!car.getCarName().equalsIgnoreCase(carName)) {
+        throw new ApiException("Car name mismatch!");
     }
-    return  " Car Details: " + car.getCarName() + " - "
-            + car.getCarType() + " - "
-            + car.getCarModel() + " - "
-            + car.getNumSeats() + " - "
-            + car.getCompany() + " - "
-            + car.getFuelPercentage() + " - "
-            + car.getLocation();
+
+    return car;
 }
+
 
 
     public Double getAvgRating(String carName) {

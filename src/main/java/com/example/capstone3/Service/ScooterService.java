@@ -61,7 +61,7 @@ return scooterRepository.findAll();
     public List<Scooter>byModel(Integer model){
         List<Scooter> scooters=scooterRepository.findScooterByModel(model);
         if ((scooters.isEmpty())){
-            throw new ApiException("not Avalabile");
+            throw new ApiException("not available");
         }
         return scooters;
     }

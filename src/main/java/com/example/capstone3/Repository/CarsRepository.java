@@ -8,7 +8,9 @@ import java.util.List;
 @Repository
 public interface CarsRepository extends JpaRepository<Cars,Integer> {
     Cars findCarsByCarId(Integer carId);
-    Cars findCarsByCarName(String carName);
+
+   Cars findCarsByCarName(String carName);
+
     Boolean existsByCarName(String carName);
     List<Cars> findCarsByCarType (String carType);
     List<Cars> findCarsByRentStatus( String rentStatus);

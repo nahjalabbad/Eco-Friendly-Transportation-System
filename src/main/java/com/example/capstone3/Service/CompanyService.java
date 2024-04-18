@@ -43,7 +43,7 @@ public class CompanyService {
 
     //extra
 
-    public void addTransportationType(Integer companyId , String transportationType){
+    public void ChangeTransportationType(Integer companyId , String transportationType){
         Company c = companyRepository.findCompanyByCompanyId(companyId);
         if(c==null){
             throw new ApiException("Company not found");

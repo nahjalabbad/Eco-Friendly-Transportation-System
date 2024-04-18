@@ -58,7 +58,7 @@ public class CarController {
         return ResponseEntity.status(200).body(carsService.viewAllCars());
     }
 
-    @GetMapping("/avrg/{carName}")
+    @GetMapping("/avg-rating/{carName}")
     public ResponseEntity getAvrgRating(@PathVariable String carName){
         return ResponseEntity.status(200).body(new ApiResponse("Average rating for "+carName+" is "+carsService.getAvgRating(carName)));
     }

@@ -38,10 +38,10 @@ public class CompanyController {
 
     //              EXTRA
 
-    @PostMapping("/addtype/{companyId}/{transportationType}")
-    public ResponseEntity addTransportationType(@PathVariable Integer companyId ,  @PathVariable String transportationType){
-        companyService.addTransportationType(companyId,transportationType);
-        return ResponseEntity.status(200).body(new ApiResponse("Company Transportation Type added"));
+    @PostMapping("/changetype/{companyId}/{transportationType}")
+    public ResponseEntity ChangeTransportationType(@PathVariable Integer companyId ,  @PathVariable String transportationType){
+        companyService.ChangeTransportationType(companyId,transportationType);
+        return ResponseEntity.status(200).body(new ApiResponse("Company Transportation Type changed successfully"));
     }
 
     @GetMapping("/gettype/{transportationType}")

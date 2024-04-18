@@ -45,9 +45,9 @@ public class RentController {
     }
 
     // extra
-    @PutMapping("/return/{userId}/{companyName}/{transName}")
-    public ResponseEntity returnRent(@PathVariable Integer userId,@PathVariable String companyName, @PathVariable String transName){
-        rentService.returnRent(userId, companyName, transName);
+    @PutMapping("/return/{userId}/{companyName}/{rentId}")
+    public ResponseEntity returnRent(@PathVariable Integer userId,@PathVariable String companyName, @PathVariable Integer rentId){
+        rentService.returnRent(userId, companyName, rentId);
         return ResponseEntity.status(200).body(new ApiResponse("thank you, your return has been submitted"));
     }
 }

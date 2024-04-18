@@ -55,12 +55,12 @@ public class BicycleController {
         return ResponseEntity.status(200).body(bicycleService.getSpecificDetails(nameBik));
     }
 
-    @GetMapping("/ava-rating/{bickName}")
+    @GetMapping("/avg-rating/{bickName}")
 public ResponseEntity getAvgRating(@PathVariable String bickName){
     return ResponseEntity.status(200).body(bicycleService.getAvgRating(bickName));
     }
 
-    @GetMapping("/viewall/")
+    @GetMapping("/viewall")
     public ResponseEntity viewAValibalAllBick(){
         return ResponseEntity.status(200).body(bicycleService.viewAValibalAllBick());
     }

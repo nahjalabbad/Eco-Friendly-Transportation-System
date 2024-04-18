@@ -183,41 +183,33 @@ public class RentService {
         return rentToUse;
     }
 
-    public void returnRent(Integer userId, String companyName, String transName) {
+    public void returnRent(Integer userId, String companyName, Integer rentId) {
         User user = userRepository.findUserByUserId(userId);
-        Rent rent = rentRepository.findRentByTransportName(transName);
+        Rent rent = rentRepository.findRentByRentId(rentId);
         Company company = companyRepository.findCompanyByCompanyName(companyName);
-        Station station = rent.getDropOffStation();
 
-        if (user == null || company == null || station == null) {
-            throw new ApiException("Invalid user, company, or station");
+        if (user == null || company == null || rent == null) {
+            throw new ApiException("Invalid user, company, or rent");
         }
 
         company.setQuantity(company.getQuantity() + rent.getQuantity());
         rent.setRentStatus("Not Rented");
 
-        if (rent.getFuelPercentage()==0){
-            throw new ApiException("the fuel is already at 0");
-        }
-         else {
-             rent.setFuelPercentage(rent.getFuelPercentage() - 20);
+        if (rent.getFuelPercentage() == 0) {
+            throw new ApiException("The fuel is already at 0");
+        } else {
+            rent.setFuelPercentage(rent.getFuelPercentage() - 20);
         }
 
         companyRepository.save(company);
         rentRepository.save(rent);
 
         RentalHistory existingRentalHistory = rentalHistoryRepository.findRentalHistoriesByRent(rent);
-
         if (existingRentalHistory != null) {
             existingRentalHistory.setStatus("completed");
             existingRentalHistory.setFuelLevel(rent.getFuelPercentage());
             rentalHistoryRepository.save(existingRentalHistory);
         } else {
-            RentalHistoryDTO rentalHistoryDTO = new RentalHistoryDTO(
-                    null, userId, rent.getTransportName(), rent.getPickUpLocation(),
-                    rent.getDropOffLocation(), rent.getStartDate(), rent.getEndDate(), rent.getDuration(),
-                    "completed", rent.getFuelPercentage(), null, null
-            );
             RentalHistory rentalHistory = new RentalHistory(
                     null, userId, rent.getTransportName(), rent.getPickUpLocation(),
                     rent.getDropOffLocation(), rent.getStartDate(), rent.getEndDate(), rent.getDuration(),
@@ -226,6 +218,7 @@ public class RentService {
             rentalHistoryRepository.save(rentalHistory);
         }
     }
+
 
 
 

@@ -46,12 +46,12 @@ public class ScooterController {
 
     //viewAllScooterAvalibale
 
-    @GetMapping("/viewall/")
+    @GetMapping("/viewall")
     public ResponseEntity getAllByModel(){
         return ResponseEntity.status(200).body(scooterService.viewAvalibleScooter());
     }
 
-    @GetMapping("/ava-rating/{scooterName}")
+    @GetMapping("/avg-rating/{scooterName}")
     public ResponseEntity getAvgRating(@PathVariable String scooterName){
         return ResponseEntity.status(200).body(scooterService.getAvgRating(scooterName));
     }

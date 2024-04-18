@@ -20,6 +20,9 @@ public interface RentRepository  extends JpaRepository<Rent,Integer> {
 
     List<Rent>findRentByTransportType(String transportTyp );
 
+    @Query("SELECT company.companyName, rent FROM Company company, Rent rent WHERE company.companyName = ?1 AND rent.transportName = ?2")
+    Rent findDataByCompanyNameAndTransportName(String companyName, String transName);
+
 
 
 }

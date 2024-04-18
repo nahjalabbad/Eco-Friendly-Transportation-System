@@ -90,8 +90,8 @@ public class RentalHistoryService {
         return userRent;
     }
 
-    public List<RentalHistory> getByStatus(String status){
-        List<RentalHistory> userRent=rentalHistoryRepository.findRentalHistoriesByStatus(status);
+    public List<RentalHistory> getByStatus(Integer userId,String status){
+        List<RentalHistory> userRent=rentalHistoryRepository.findRentalHistoriesByUserIdAndStatus(userId,status);
         if (userRent.isEmpty()){
             throw new ApiException("This user does not have any rental history");
         }

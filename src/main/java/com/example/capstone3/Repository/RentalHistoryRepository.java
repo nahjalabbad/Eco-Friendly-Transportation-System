@@ -12,13 +12,12 @@ import java.util.List;
 public interface RentalHistoryRepository extends JpaRepository<RentalHistory,Integer> {
     RentalHistory findRentalHistoryByRentalId(Integer rentalId);
 
-    @Query("select user from User user where user.userId=?1")
     List<RentalHistory> findRentalHistoriesByUserId(Integer userId);
 
     @Query("select user from Rent user where user.user.userId=?1 and user.transportType=?2")
     List<RentalHistory> findRentalHistoriesByUserIdaAndTransportType(Integer userId, String transportType);
 
-    List<RentalHistory> findRentalHistoriesByStatus(String status);
+    List<RentalHistory> findRentalHistoriesByUserIdAndStatus(Integer userId,String status);
 
     List<RentalHistory> findRentalHistoriesByTransportName(String name);
 
